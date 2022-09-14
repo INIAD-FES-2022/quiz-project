@@ -1,0 +1,5 @@
+# VSCode系
+.vscode/*
+
+# db
+db.sqlite
