@@ -3,3 +3,6 @@
 
 # db
 db.sqlite
+
+# venv
+.env/*
