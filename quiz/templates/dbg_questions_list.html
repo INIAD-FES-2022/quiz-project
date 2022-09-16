@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ol>
+        {% for object in object_list %}
+        <li>
+            <ul>
+                <li>ID: {{ object.id }}</li>
+                <li>問題文: {{ object.sentence }}</li>
+                <li>選択肢A: {{ object.choiceA }}</li>
+                <li>選択肢B: {{ object.choiceB }}</li>
+                <li>選択肢C: {{ object.choiceC }}</li>
+                <li>選択肢D: {{ object.choiceD }}</li>
+                <li>解答: {{ object.correctChoice }}</li>
+            </ul>
+        </li>
+        {% endfor %}
+    </ol>
+</body>
+</html>

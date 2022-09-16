@@ -9,6 +9,11 @@ class UserData(models.Model):
     correctNums = models.IntegerField(default=0, verbose_name="正解数")
 
 
+# 開催回を保持。
+class QuizEvents(models.Model):
+    name = models.CharField(max_length=50, verbose_name="名称")
+
+
 # クイズの問題を保持する。
 class Questions(models.Model):
     ANSWER_CHOICES = [
@@ -31,6 +36,7 @@ class Questions(models.Model):
 class Quizzes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.ForeignKey(Questions, on_delete=models.PROTECT, related_name="+")
+    event = models.ForeignKey(QuizEvents, on_delete=models.PROTECT, related_name="quizzes")
     startTime = models.DateTimeField(auto_now_add=True, verbose_name="解答開始時刻")
     endTime = models.DateTimeField(null=True, verbose_name="解答終了時刻")
 

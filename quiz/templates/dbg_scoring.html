@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+        <li>ID: {{ quiz.id }}</li>
+        <li>問題文: {{ quiz.question.sentence }}</li>
+        <li>選択肢A: {{ quiz.question.choiceA }}</li>
+        <li>選択肢B: {{ quiz.question.choiceB }}</li>
+        <li>選択肢C: {{ quiz.question.choiceC }}</li>
+        <li>選択肢D: {{ quiz.question.choiceD }}</li>
+        <li>解答: {{ quiz.question.correctChoice }}</li>
+    </ul>
+    <ol>
+        {% for object in object_list %}
+        <li>
+            <ul>
+                <li>ID: {{ object.id }}</li>
+                <li>解答の対象: {{ object.quiz.id }}</li>
+                <li>クイズ: {{ object.quiz.question.sentence }}</li>
+                <li>ユーザのUUID: {{ object.user.id }}</li>
+                <li>ユーザの解答: {{ object.choice }}</li>
+            </ul>
+        </li>
+        {% endfor %}
+    </ol>
+</body>
+</html>
