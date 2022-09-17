@@ -4,14 +4,15 @@ import uuid
 
 # QuizConsumerクラス: WebSocketからの受け取ったものを処理するクラス
 class QuizConsumer( AsyncWebsocketConsumer ):
+    groups = ['INIAD_FES_06_quiz_group']
+
     # WebSocket接続時の処理
     async def connect( self ):
         self.room_group_name = 'INIAD_FES_06_quiz_group'
-        ch_name = self.scope["url_route"]["kwargs"]["userid"]
-        # useridがNoneの場合はuuidを生成する
-        if ch_name:
-            self.channel_name = ch_name
-        else:
+        # useridが無い場合はuuidを生成する
+        try:
+            self.channel_name = self.scope["url_route"]["kwargs"]["userid"]
+        except:
             self.channel_name = str(uuid.uuid4())
 
         await self.channel_layer.group_add(
@@ -38,6 +39,7 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             # 受信処理関数の追加
             text_data_json["type"]="spread_send"
             await self.channel_layer.group_send( self.room_group_name, text_data_json )
+            await self.send( text_data = text_data )
 
         # 参加者がデータを送信した場合の処理
         else:

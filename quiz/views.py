@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from django.views.generic import TemplateView
 from quiz.models import Questions, UserAnswers, Quizzes
 import uuid
 # Create your views here.
@@ -50,3 +51,6 @@ class dbgUserAnswersCreate(CreateView):
     model = UserAnswers
     template_name = "dbg_create.html"
     fields = "__all__"
+
+class dbgSocket(TemplateView):
+    template_name = "dbg_socket.html"
