@@ -6,7 +6,7 @@ const g_element_textform = document.getElementById("textform");
 const g_element_textdisplay = document.getElementById("display");
 
 function socket(){
-    g_socket.send( JSON.stringify( { "content": g_element_textform.value, "isStaff": true } ) );
+    g_socket.send( JSON.stringify( { "content": g_element_textform.value } ) );
 };
 
 // WebSocketからデータ受信時の処理

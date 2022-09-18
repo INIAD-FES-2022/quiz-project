@@ -33,9 +33,10 @@ class QuizConsumer( AsyncWebsocketConsumer ):
     async def receive( self, text_data ):
         # 受信データをJSONデータに復元
         text_data_json = json.loads( text_data )
+        user = self.scope['user']
 
         # 管理者がデータを送信した場合の処理
-        if(text_data_json.get( 'isStaff' )):
+        if(user.is_authenticated):
             # 受信処理関数の追加
             text_data_json["type"]="spread_send"
             await self.channel_layer.group_send( self.room_group_name, text_data_json )
