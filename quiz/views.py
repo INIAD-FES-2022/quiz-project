@@ -1,5 +1,6 @@
 from msilib.schema import ListView
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.http import HttpResponse
 
 from django.views.generic.edit import CreateView
@@ -31,6 +32,7 @@ class dbgQuestionsCreate(CreateView):
     model = Questions
     template_name = "dbg_create.html"
     fields = "__all__"
+    success_url = reverse_lazy("questions_list")
 
 class dbgQuizzesList(ListView):
     model = Quizzes
@@ -40,7 +42,8 @@ class dbgQuizzesList(ListView):
 class dbgQuizzesCreate(CreateView):
     model = Quizzes
     template_name = "dbg_create.html"
-    fields = "__all__"
+    fields = ["question", "event"]
+    success_url = reverse_lazy("quizzes_list")
 
 class dbgUserAnswersList(ListView):
     model = UserAnswers
@@ -51,6 +54,7 @@ class dbgUserAnswersCreate(CreateView):
     model = UserAnswers
     template_name = "dbg_create.html"
     fields = "__all__"
+    success_url = reverse_lazy("useranswers_list")
 
 class dbgSocket(TemplateView):
     template_name = "dbg_socket.html"

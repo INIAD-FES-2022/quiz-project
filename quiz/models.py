@@ -5,13 +5,24 @@ import uuid
 # クイズ用のユーザデータを保持。
 class UserData(models.Model):
     id = models.UUIDField(primary_key=True)
-    score = models.IntegerField(default=0, verbose_name="得点")
-    correctNums = models.IntegerField(default=0, verbose_name="正解数")
 
 
 # 開催回を保持。
 class QuizEvents(models.Model):
     name = models.CharField(max_length=50, verbose_name="名称")
+
+# 開催回ごとのユーザのスコアを保持。
+class UserScores(models.Model):
+    user = models.ForeignKey(UserData, on_delete=models.PROTECT, related_name="scores")
+    event = models.ForeignKey(QuizEvents, on_delete=models.PROTECT, related_name="joined_users")
+    score = models.IntegerField(default=0, verbose_name="得点")
+    correctNums = models.IntegerField(default=0, verbose_name="正解数")
+    temp_rank = models.IntegerField(default=-1, verbose_name="あなたの順位")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "event"], name="unique_score")  # 複合キーの設定。
+        ]
 
 
 # クイズの問題を保持する。
@@ -23,7 +34,6 @@ class Questions(models.Model):
         ("C", "C"),
         ("D", "D"),
     ]
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sentence = models.CharField(max_length=150, verbose_name="問題")
     choiceA = models.CharField(max_length=50, verbose_name="選択肢A")
     choiceB = models.CharField(max_length=50, verbose_name="選択肢B")
@@ -52,3 +62,8 @@ class UserAnswers(models.Model):
     quiz = models.ForeignKey(Quizzes, on_delete=models.PROTECT, related_name="answers")
     user = models.ForeignKey(UserData, on_delete=models.PROTECT, related_name="+")
     choice = models.CharField(max_length=1, choices=CHOICES)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["quiz", "user"], name="unique_answer")  # 複合キーの設定。
+        ]
