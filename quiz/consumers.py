@@ -40,7 +40,6 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             # 受信処理関数の追加
             text_data_json["type"]="spread_send"
             await self.channel_layer.group_send( self.room_group_name, text_data_json )
-            await self.send( text_data = text_data )
 
         # 参加者がデータを送信した場合の処理
         else:
