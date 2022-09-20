@@ -16,17 +16,16 @@
         <li>選択肢D: {{ quiz.question.choiceD }}</li>
         <li>解答: {{ quiz.question.correctChoice }}</li>
     </ul>
+    <h2>正解者</h2>
     <ol>
-        {% for object in object_list %}
-        <li>
-            <ul>
-                <li>ID: {{ object.id }}</li>
-                <li>解答の対象: {{ object.quiz.id }}</li>
-                <li>クイズ: {{ object.quiz.question.sentence }}</li>
-                <li>ユーザのUUID: {{ object.user.id }}</li>
-                <li>ユーザの解答: {{ object.choice }}</li>
-            </ul>
-        </li>
+        {% for object in object_list.correct %}
+        <li>{{ object }}</li>
+        {% endfor %}
+    </ol>
+    <h2>不正解者</h2>
+    <ol>
+        {% for object in object_list.incorrect %}
+        <li>{{ object }}</li>
         {% endfor %}
     </ol>
 </body>

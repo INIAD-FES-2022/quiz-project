@@ -8,6 +8,8 @@ from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from quiz.models import Questions, UserAnswers, Quizzes
 import uuid
+
+import quiz.quiz_functions as qfc
 # Create your views here.
 
 def debugTop(request):
@@ -15,12 +17,48 @@ def debugTop(request):
 
 def dbgScoring(request, quizUuid):
     quiz = Quizzes.objects.get(id=quizUuid)
-    answers = UserAnswers.objects.filter(quiz=quiz).filter(choice=quiz.question.correctChoice)
+    scored_users = qfc.get_scored_users(quizUuid)
+    
+    qfc.users_add_score(quiz.event.id, scored_users.get("correct"), 20, True)
+
+    message = {
+        "messageType": "scoringResult",
+        "correctChoice": quiz.question.correctChoice,
+        "isCorrect": None,
+    }
+
+    message["isCorrect"] = True
+    for user in scored_users.get("correct"):
+        qfc.user_send_message(user, message)
+    
+    message["isCorrect"] = False
+    for user in scored_users.get("incorrect"):
+        qfc.user_send_message(user, message)
+    
     context = {
         "quiz": quiz,
-        "object_list": answers,
+        "object_list": scored_users,
     }
     return render(request, "dbg_scoring.html", context)
+
+def dbgSendRanking(request, event_id):
+    qfc.update_ranking(event_id)
+    users_score = qfc.get_users_score(event_id)
+
+    for user in users_score:
+        message = {
+            "messageType": "rankDisplay",
+            "rank": user.temp_rank,
+            "score": user.score,
+            "correctNums": user.correctNums,
+        }
+        qfc.user_send_message(user.user.id, message)
+
+    context = {
+        "object_list": users_score,
+    }
+    
+    return render(request, "dbg_sendranking.html", context)
 
 
 class dbgQuestionsList(ListView):

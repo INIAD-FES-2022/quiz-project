@@ -11,4 +11,5 @@ urlpatterns = [
     path("debug/quizzes/create", views.dbgQuizzesCreate.as_view()),
     path("debug/scoring/<uuid:quizUuid>", views.dbgScoring),
     path("debug/socket/", views.dbgSocket.as_view()),
+    path("debug/sendranking/<int:event_id>", views.dbgSendRanking),
 ]

@@ -39,7 +39,7 @@ class Questions(models.Model):
     choiceB = models.CharField(max_length=50, verbose_name="選択肢B")
     choiceC = models.CharField(max_length=50, verbose_name="選択肢C")
     choiceD = models.CharField(max_length=50, verbose_name="選択肢D")
-    correctChoice = models.CharField(max_length=1,choices=ANSWER_CHOICES)
+    correctChoice = models.CharField(max_length=1,choices=ANSWER_CHOICES, verbose_name="正解")
 
 
 # 出題したクイズの履歴を保持する。

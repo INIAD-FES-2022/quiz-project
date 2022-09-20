@@ -1,4 +1,6 @@
 from quiz.models import Questions, UserAnswers, Quizzes, UserData, QuizEvents, UserScores
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 # クイズに対しての採点結果を取得する。
 # target_quiz_uuid: 採点したいクイズのUUID。
@@ -64,11 +66,14 @@ def users_reset_score(target_event_id, target_users_uuid, score_flg=False, corre
 
 # 特定の開催回、ユーザのスコアを取得する。
 # target_event_id: クイズ大会の開催回のID。
-# target_users_uuid: 初期化を行う対象のユーザのUUID。
-# 戻り値: UserScoresオブジェクト
-def get_user_score(target_event_id, target_user_uuid):
-    target_user = UserScores.objects.get(event=target_event_id, user=target_user_uuid)
-    return target_user
+# target_users_uuid: 初期化を行う対象のユーザのUUID。指定しない場合は、開催回に参加したユーザ全て
+# 戻り値: UserScoresオブジェクトまたは、そのリスト
+def get_users_score(target_event_id, target_user_uuid=None):
+    if target_user_uuid is None:
+        ret = UserScores.objects.filter(event=target_event_id)
+    else:
+        ret = UserScores.objects.get(event=target_event_id, user=target_user_uuid)
+    return ret
 
 # 指定した開催回のランキングを更新する。
 # target_event_id: クイズ大会の開催回のID。
@@ -89,3 +94,16 @@ def update_ranking(target_event_id):
         user.temp_rank = rank
         before_score = user.score
         user.save()
+
+# ユーザへメッセージを送信する。
+# dst_user_uuid: 送信先となるユーザのUUID
+# message: 送りたいメッセージ(JSON推奨)
+def user_send_message(dst_user_uuid, message):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        str(dst_user_uuid),
+        {
+            "type": "spread_send",
+            "message": message,
+        }
+    )
