@@ -11,12 +11,19 @@ class QuizConsumer( AsyncWebsocketConsumer ):
         self.room_group_name = 'INIAD_FES_06_quiz_group'
         # useridが無い場合はuuidを生成する
         try:
-            self.channel_name = self.scope["url_route"]["kwargs"]["userid"]
+            self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
         except:
-            self.channel_name = str(uuid.uuid4())
+            self.uuid_str = str(uuid.uuid4())
+        print(self.uuid_str)
 
+        # 全体送信用グループ
         await self.channel_layer.group_add(
             self.room_group_name,
+            self.channel_name
+        )
+        # 個別送信用グループ
+        await self.channel_layer.group_add(
+            self.uuid_str,
             self.channel_name
         )
         await self.accept()
