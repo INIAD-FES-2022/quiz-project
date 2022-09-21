@@ -12,6 +12,7 @@ urlpatterns = [
     path("debug/useranswers/create", views.dbgUserAnswersCreate.as_view()),
     path("debug/quizzes/", views.dbgQuizzesList.as_view(), name="quizzes_list"),
     path("debug/quizzes/create", views.dbgQuizzesCreate.as_view()),
+    path("debug/quizzes/<uuid:quizUuid>/open", views.dbgQuizOpen),
     path("debug/scoring/<uuid:quizUuid>", views.dbgScoring),
     path("debug/socket/", views.dbgSocket.as_view()),
     path("debug/sendranking/<int:event_id>", views.dbgSendRanking),

@@ -107,3 +107,14 @@ def user_send_message(dst_user_uuid, message):
             "message": message,
         }
     )
+
+# 全ユーザへメッセージを送信。
+def all_user_send_message(message):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "INIAD_FES_06_quiz_group",
+        {
+            "type": "spread_send",
+            "message": message,
+        }
+    )

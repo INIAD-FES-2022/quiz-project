@@ -62,6 +62,22 @@ class ControlQuizEventsAddQuiz(CreateView):
 def debugTop(request):
     return HttpResponse("Debug Top!")
 
+def dbgQuizOpen(request, quizUuid):
+    quiz = Quizzes.objects.get(id=quizUuid)
+    question = quiz.question
+
+    message = {
+        "messageType": "quizOpen",
+        "sentence": question.sentence,
+        "choices": [question.choiceA, question.choiceB, question.choiceC, question.choiceD,],
+    }
+
+    print(message)
+
+    qfc.all_user_send_message(message)
+
+    return HttpResponse("Successfully opened quiz.")
+
 def dbgScoring(request, quizUuid):
     quiz = Quizzes.objects.get(id=quizUuid)
     scored_users = qfc.get_scored_users(quizUuid)
