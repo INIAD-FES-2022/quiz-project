@@ -3,7 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import uuid
 
 from quiz.models import UserAnswers
-from quiz_functions import *
+from quiz.quiz_functions import *
 
 # QuizConsumerクラス: WebSocketからの受け取ったものを処理するクラス
 class QuizConsumer( AsyncWebsocketConsumer ):

@@ -1,16 +1,62 @@
 from msilib.schema import ListView
 from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic import TemplateView
-from quiz.models import Questions, UserAnswers, Quizzes
-import uuid
+from quiz.models import Questions, QuizEvents, UserAnswers, Quizzes
 
 import quiz.quiz_functions as qfc
 # Create your views here.
+
+class ControlQuizEvents(ListView):
+    model = QuizEvents
+    fields = ["id", "name"]
+    template_name = "control_quiz_events.html"
+
+
+class ControlQuizEventsDetail(SingleObjectMixin, ListView):
+    template_name = "control_quiz_events_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=QuizEvents.objects.all())
+        return super().get(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        return self.object.quizzes.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["quiz_event"] = self.object
+        print(context)
+        return context
+    
+
+class ControlQuizEventsAddQuiz(CreateView):
+    model = Quizzes
+    fields = ["question"]
+    template_name = "control_quiz_events_add_quiz.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields["question"].widget = forms.RadioSelect()
+        form.fields["question"].empty_label = None
+        form.fields["question"].queryset = Questions.objects.all()
+        print(form)
+        return form
+    
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.event = QuizEvents.objects.get(pk=self.kwargs["pk"])
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_success_url(self):
+        return reverse("control_quiz_events_detail", kwargs={"pk": self.kwargs["pk"]})
+
 
 def debugTop(request):
     return HttpResponse("Debug Top!")

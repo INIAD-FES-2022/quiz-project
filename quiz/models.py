@@ -41,6 +41,9 @@ class Questions(models.Model):
     choiceD = models.CharField(max_length=50, verbose_name="選択肢D")
     correctChoice = models.CharField(max_length=1,choices=ANSWER_CHOICES, verbose_name="正解")
 
+    def __str__(self):
+        return f"Questions(id={self.id}, sentence={self.sentence})"
+
 
 # 出題したクイズの履歴を保持する。
 class Quizzes(models.Model):
