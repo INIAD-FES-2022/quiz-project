@@ -8,6 +8,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic import TemplateView
 from quiz.models import Questions, QuizEvents, UserAnswers, Quizzes
+from django import forms
 
 import quiz.quiz_functions as qfc
 # Create your views here.
