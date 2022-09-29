@@ -33,12 +33,12 @@
 			<h2 class="text-6xl font-light border-b-2 border-orange-100">INIAD-Q</h2>
 			</div>
 		</section>
-		<section class="flex text-center items-center justify-center">
+		<section class="sm:flex text-center items-center justify-center">
 			<!-- About Section -->
 			<div>
-				<h2 class="transform rotate-90 text-5xl">ABOUT</h2>
+				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl ">ABOUT</h2><br>
 			</div>
-			<div class="font-light text-gray-600">
+			<div class="font-light text-gray-600 sm:mr-12">
 				<h3 class="text-2xl border-b-2 border-orange-100">Overview</h3><br>
 				<p>texttexttexttexttexttexttexttexttext</p><br>
 				<h3 class="text-2xl border-b-2 border-orange-100">Rule</h3><br>
@@ -51,13 +51,16 @@
 				</ul><br>
 			</div>
 		</section>
-		<section class="flex items-center justify-center">
+		<section class="sm:flex flex-row-reverse items-center justify-center">
 			<!-- Ranking Section -->
-			<div class="overflow-y-auto h-96 border-2 border-orange-300 rounded">
-				<table class="p-6 text-gray-800">
+			<div>
+				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl text-center">RANKING</h2><br>
+			</div>
+			<div class="flex-initial w-{200px} overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
+				<table class="text-gray-800 w-full sm:w-auto">
 					<thead class="text-left border-b-2 border-orange-300">
 						<tr>
-							<th class="px-4 py-3">Ranking</th><th class="px-4 py-3">Name</th><th class="px-4 py-3">Score</th>
+							<th class="px-4 py-3">#</th><th class="px-4 py-3">Name</th><th class="px-4 py-3">Score</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -94,9 +97,6 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="leading-10">
-				<h2 class="transform rotate-90 text-5xl text-center ">RANKING</h2>
-			</div>
 		</section><br>
 		<section>
 			<!-- Register Section -->
@@ -104,7 +104,7 @@
 				<h2 class="text-5xl ">REGISTER</h2>
 				<form class="mt-10">
 					<label for="nickname">ニックネーム（必須）</label>
-					<input type="text" minlength="2" maxlength="10" id="nickname">
+					<input type="text" class="text-gray-600" value="" minlength="2" maxlength="10" id="nickname">
 					<button type="submit" class="mt-10 pl-3 pr-3 pt-2 pb-2 text-2xl bg-white bg-opacity-25 btn">参加</button>
 				</form>
 			</div>
