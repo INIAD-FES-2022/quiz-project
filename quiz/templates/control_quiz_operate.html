@@ -1,10 +1,37 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
         <title>クイズ管理サイト - 操作</title>
+        <script src="{% static 'js/operation.js' %}" async></script>
     </head>
     <body>
+        <h1>クイズ管理サイト　操作画面</h1>
+        <h2>クイズ開催</h2>
+            <!--開催会選択-->
+            <select name="competition">
+                <option value=""></option>
+            </select>
+            <!--待機中切り替え-->
+            <input type="button" value="スタート">
+        <h2>出題する問題を選択してください。</h2>
+            <!--開催会と問題を選択する形？-->
+            <select name="question">
+                <option value=""></option>
+            </select>
+        <h2>問題の公開・非公開・採点ボタン</h2>
+            <input type="button" value="公開">
+            <input type="button" value="非公開">
+            <input type="button" value="採点">
+        <h2>回答者に送信するメッセージを入力してください。</h2>
+            <input type="text" name="message">
+            <input type="button" value="送信">
+        <h2>中間発表</h2>
+            <input type="button" value="中間発表">
+        <h2>クイズ終了ボタン</h2>
+            <input type="button" value="終了">
 
+        <p><a href="">トップページへ</a></p>
     </body>
 </html>
