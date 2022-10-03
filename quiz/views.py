@@ -66,7 +66,7 @@ class ControlQuizHistory(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         lst=[]
-        for obj in context:
+        for obj in context["object_list"]:
             lst.append(qfc.get_users_score(obj.id))
         context["event_ranking"] = lst
         return context
