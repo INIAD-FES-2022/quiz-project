@@ -58,6 +58,19 @@ class ControlQuizEventsAddQuiz(CreateView):
     def get_success_url(self):
         return reverse("control_quiz_events_detail", kwargs={"pk": self.kwargs["pk"]})
 
+class ControlQuizHistory(ListView):
+    model = QuizEvents
+    fields = ["id", "name"]
+    template_name = "control_quiz_history.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lst=[]
+        for obj in context:
+            lst.append(qfc.get_users_score(obj.id))
+        context["event_ranking"] = lst
+        return context
+
 
 def debugTop(request):
     return HttpResponse("Debug Top!")

@@ -8,8 +8,35 @@
         <h1>クイズ管理サイト　ランキング</h1>
         <p>クイズの開催会を選んでください</p>
         <!--テンプレート言語で一覧をうまく表示させてください-->
-        <select name="">
-            <option value=""></option>
-        </select>
+        {% if object_list %}
+            <select name="quiz_events" onchange="select_ranking(); return false;">
+                {% for object in object_list %}
+                    <option value="{{ forloop.counter0 }}">{{ object.name }}</option>
+                {% endfor %}
+            </select>
+            <div id="display_ranking"></div>
+        {% else %}
+            <h2>開催回がありません</h2>
+        {% endif %}
     </body>
 </html>
+
+<script type="text/javascript">
+    const d_rank = document.getElementById("display_ranking");
+    function select_ranking(){
+        let id = Number(document.getElementById("quiz_events").value);
+        while( d_rank.firstChild ){
+            d_rank.removeChild( d_rank.firstChild );
+        }
+        var e_rank_raw = "{{ event_ranking }}";
+        var e_rank = e_rank_raw[id];
+        for(let i=0; i<(e_rank.length); i++){
+            var rank = e_rank[i];
+            var text = rank.temp_rank+"位 名前"+rank.user+" スコア"+rank.score+" 正答数"+rank.correctNums;
+            var new_element = document.createElement('p');
+            new_element.textContent = text;
+            textbox_element.appendChild(new_element);
+        }
+
+    }
+</script>
