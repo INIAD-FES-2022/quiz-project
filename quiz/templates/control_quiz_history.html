@@ -9,7 +9,7 @@
         <p>クイズの開催会を選んでください</p>
         <!--テンプレート言語で一覧をうまく表示させてください-->
         {% if object_list %}
-            <select name="quiz_events" onchange="select_ranking(); return false;">
+            <select name="" id="quiz_events" onchange="select_ranking(); return false;">
                 {% for object in object_list %}
                     <option value="{{ forloop.counter0 }}">{{ object.name }}</option>
                 {% endfor %}
