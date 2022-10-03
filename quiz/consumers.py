@@ -18,11 +18,6 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
         except:
             self.uuid_str = str(uuid.uuid4())
-        print(self.uuid_str)
-        print(self.room_group_name)
-        print(self.channel_name)
-        print(QuizConsumer.groups)
-        print(QuizConsumer.static_group)
 
         QuizConsumer.groups.append(self.uuid_str)
 
