@@ -14,7 +14,17 @@
                     <option value="{{ forloop.counter0 }}">{{ object.name }}</option>
                 {% endfor %}
             </select>
-            <div id="display_ranking"></div>
+            <div id="display_ranking">
+                {% for e_rank in event_ranking %}
+                    {% if forloop.counter0 == 0 %}
+                        {% for rank in e_rank %}
+                            <p>
+                                {{ rank.temp_rank }}位, 名前 {{rank.user}}, スコア {{rank.score}}, 正答数 {{rank.correctNums}}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
         {% else %}
             <h2>開催回がありません</h2>
         {% endif %}
@@ -31,7 +41,7 @@
         "{% for e_rank_lst in event_ranking %}"
             if("{{ forloop.counter0 }}" == id){
                 "{% for rank in e_rank %}"
-                var text = "{{ rank.temp_rank }}" + "位, 名前" + "{{rank.user}}" + ", スコア" + "{{rank.score}}" + ", 正答数" + "{{rank.correctNums}}";
+                var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{rank.user}}" + ", スコア " + "{{rank.score}}" + ", 正答数 " + "{{rank.correctNums}}";
                 var new_element = document.createElement('p');
                 new_element.textContent = text;
                 d_rank.appendChild(new_element);
