@@ -10,15 +10,27 @@
         <h1>クイズ管理サイト　操作画面</h1>
         <h2>クイズ開催</h2>
             <!--開催会選択-->
-            <select name="competition">
-                <option value=""></option>
-            </select>
+            {% if object_list %}                
+                <select name="competition" id="select_c" onchange="select_comp(); return false;">
+                    {% for object in object_list %}
+                        <option value="{{ forloop.counter0 }}">{{ object.name }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <h3>開催回がありません</h3>
+            {% endif %}
             <!--待機中切り替え-->
             <input type="button" value="スタート">
         <h2>出題する問題を選択してください。</h2>
             <!--開催会と問題を選択する形？-->
-            <select name="question">
-                <option value=""></option>
+            <select name="question" id="select_q">
+                {% for qs in questions %}
+                    {% if forloop.counter0 == 0 %}
+                        {% for q in qs %}
+                            <option value="{{ q.id }}">{{ q.sentence }}</option>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </select>
         <h2>問題の公開・非公開・採点ボタン</h2>
             <input type="button" value="公開">
@@ -35,3 +47,24 @@
         <p><a href="">トップページへ</a></p>
     </body>
 </html>
+
+<script type="text/javascript">
+    const select_qs = document.getElementById("select_q");
+    function select_comp(){
+        let id = Number(document.getElementById("select_c").value);
+        while( select_qs.firstChild ){
+            select_qs.removeChild( select_qs.firstChild );
+        }
+        '{% for qs in questions %}'
+            if('{{ forloop.counter0 }}' == id){
+                '{% for q in qs %}'
+                    var text = '{{q.sentence}}';
+                    var new_element = document.createElement('option');
+                    new_element.textContent = text;
+                    new_element.value = '{{q.id}}';
+                    select_qs.appendChild(new_element);
+                '{% endfor %}'
+            }
+        '{% endfor %}'
+    }
+</script>

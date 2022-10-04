@@ -28,15 +28,15 @@
         while( d_rank.firstChild ){
             d_rank.removeChild( d_rank.firstChild );
         }
-        var e_rank_raw = "{{ event_ranking }}";
-        var e_rank = e_rank_raw[id];
-        for(let i=0; i<(e_rank.length); i++){
-            var rank = e_rank[i];
-            var text = rank.temp_rank+"位 名前"+rank.user+" スコア"+rank.score+" 正答数"+rank.correctNums;
-            var new_element = document.createElement('p');
-            new_element.textContent = text;
-            textbox_element.appendChild(new_element);
-        }
-
+        "{% for e_rank_lst in event_ranking %}"
+            if("{{ forloop.counter0 }}" == id){
+                "{% for rank in e_rank %}"
+                var text = "{{ rank.temp_rank }}" + "位, 名前" + "{{rank.user}}" + ", スコア" + "{{rank.score}}" + ", 正答数" + "{{rank.correctNums}}";
+                var new_element = document.createElement('p');
+                new_element.textContent = text;
+                d_rank.appendChild(new_element);
+                "{% endfor %}"
+            };
+        "{% endfor %}"
     }
 </script>

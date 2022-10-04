@@ -71,6 +71,24 @@ class ControlQuizHistory(ListView):
         context["event_ranking"] = lst
         return context
 
+class ControlQuizOperate(ListView):
+    model = QuizEvents
+    fields = ["id", "name"]
+    template_name = "control_quiz_operate.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lst=[]
+        for obj in context["object_list"]:
+            qs_lst = []
+            qz_lst = Quizzes.objects.filter(event=obj.id)
+            for qz in qz_lst:
+                qs_lst.append(Questions.objects.get(pk=qz.question_id))
+            lst.append(qs_lst)
+        context["questions"] = lst
+        print(context)
+        return context
+
 
 def debugTop(request):
     return HttpResponse("Debug Top!")
