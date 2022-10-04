@@ -3,7 +3,7 @@
     <head>
         <title>INIAD-Q</title>
         <meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width initial-scale-=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body>
@@ -56,7 +56,12 @@
 			<div>
 				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl text-center">RANKING</h2><br>
 			</div>
-			<div class="flex-initial w-{200px} overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
+			<div class="flex-initial justify-center w-auto overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
+				<select name="competition" class="">
+				<!--　開催回を選んで下のテーブルを書き換えたい-->
+					<option>第1回</option>
+					<option>第2回</option>
+				</select>
 				<table class="text-gray-800 w-full sm:w-auto">
 					<thead class="text-left border-b-2 border-orange-300">
 						<tr>
