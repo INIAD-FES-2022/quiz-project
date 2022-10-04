@@ -1,28 +1,130 @@
-<!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<title>INIAD-Q</title>
-		<script src="https://cdn.tailwindcss.com"></script>
-	</head>
-	<body>
-		<header class="mx-auto">
-			<div class="flex justify-between items-center">
-				<div>
-					<a href=""><h1 class="text-4xl p-3 bg-clip-text text-transparent bg-gradient-to-r from-red-300 to-yellow-300">INIAD-Q</h1></a>
-				</div>
-				<div class="p-6">
-					<p>メッセージ</p>
+<!doctype html>
+<html>
+<head>
+	<title>quiz_play.html</title>
+    <meta charset="UTF-8">
+	<!--<script src="https://cdn.tailwindcss.com"></script>-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
+	<link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.3/dist/flowbite.min.css" />
+</head>
+
+<body>
+	<!--ヘッダー-->
+	<header class="mx-auto">
+		<div class="flex justify-between items-center">
+			<a href=""><h1 class="text-4xl p-3 bg-clip-text text-transparent bg-gradient-to-r from-red-300 to-yellow-300">INIAD-Q</h1></a>
+				<!-- 
+				<button>
+					<svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+						<path d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z"/>
+					</svg>                       
+				</button>
+				-->
+		</div>
+	</header>
+	<!--コンテンツ-->
+	<section class="relative">
+		<!--待機中-->
+		<div id="waiting" class="absolute w-screen h-full bg-color-gray bg-gray-100" style="visibility: hidden;">
+			<div class="leading-10 text-center">
+				<h2 class="text-5xl">INIAD-Q</h2>
+				<p class="text-3xl font-light">待機中..</p>
+			</div>
+		</div>
+		<!--正解-->
+		<div id="correct" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
+			<div class="flex justify-center items-center mt-20">
+				<img src="images/correct.svg" class="h-52">
+			</div>
+			<div class="flex justify-center items-center mt-5">
+				<h2 class="text-4xl">正解！</h2>
+			</div>
+			<div class="flex justify-center items-center mt-5">
+				<p class="text-2xl">答えはAです。</p>
+			</div>
+		</div>
+		<!--不正解-->
+		<div id="incorrect" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
+			<div class="flex justify-center items-center mt-20">
+				<img src="images/incorrect.svg" class="h-52">
+			</div>
+			<div class="flex justify-center items-center mt-5">
+				<h2 class="text-4xl">不正解！</h2>
+			</div>
+			<div class="flex justify-center items-center mt-5">
+				<p class="text-2xl">答えはAです。</p>
+			</div>
+		</div>
+		<!--クイズ画面-->
+		<div id="quiz" class="w-full">
+			<!--配信画面-->
+			<div id="streaming" data-accordion="open" class="w-full">
+				<h2 id="streaming-header" class="w-full">
+					<button type="button" class="flex items-center justify-center w-full p-5 font-medium text-gray-500 border border-orange-200 " data-accordion-target="#streaming-body" aria-expanded="true" aria-controls="streaming-body">
+						<svg data-accordion-icon class="w-10 h-10 rotate-180 shrink-0 mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+						<span class="flex items-center text-3xl">配信画面</span>
+					</button>
+				</h2>
+				<div id="streaming-body" class="" aria-labelledby="streaming-header">
+					<div class="flex justify-center border border-b-0 border-orange-200">
+						<iframe class="h-64 w-96" src="https://www.youtube.com/embed/D48T0wNm96w" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+					</div>
 				</div>
 			</div>
-        </header>
-		<!--待機中画面-->
-		<
-		<!--配信画面-->
-		<!--問題文-->
-		<!--回答欄-->
-		<!--正解レイヤー-->
-		<!--不正解レイヤー-->
-		<!--発表画面-->
+			<!--問題文-->
+			<div>
+				<div id="sentence" data-accordion="open" class="w-full">
+					<h2 id="sentence-header" class="w-full">
+						<button type="button" class="flex items-center justify-center w-full p-5 font-medium text-gray-500 border border-orange-200 " data-accordion-target="#sentence-body" aria-expanded="true" aria-controls="sentence-body">
+							<svg data-accordion-icon class="w-10 h-10 rotate-180 shrink-0 mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+							<span class="flex items-center text-3xl">問題文</span>
+						</button>
+					</h2>
+					<div id="sentence-body" class="" aria-labelledby="sentence-header">
+						<div class="flex justify-center border border-b-0 border-orange-200 p-6">
+							<p id="sentence-paragraph" class="text-2xl">問題</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--回答欄-->
+			<div id="choice" data-accordion="open" class="w-full">
+				<h2 id="choice-header" class="w-full">
+					<button type="button" class="flex items-center justify-center w-full p-5 font-medium text-gray-500 border border-orange-200 " data-accordion-target="#choice-body" aria-expanded="true" aria-controls="choice-body">
+						<svg data-accordion-icon class="w-10 h-10 rotate-180 shrink-0 mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+						<span class="flex items-center text-3xl">回答欄</span>
+					</button>
+				</h2>
+				<div id="choice-body" class="" aria-labelledby="choice-header">
+					<div class="flex justify-center border border-b-0 border-orange-200">
+						<div>
+							<div>
+								<input type="radio" id="A" name="answer" class="hidden peer"><label for="A" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-red-200 peer-checked:bg-red-200">選択肢A</label>
+							</div>
+							<div>
+								<input type="radio" id="B" name="answer" class="hidden peer"><label for="B" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-blue-200 peer-checked:bg-blue-200">選択肢B</label>
+							</div>
+							<div>
+								<input type="radio" id="C" name="answer" class="hidden peer"><label for="C" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-yellow-200 peer-checked:bg-yellow-200">選択肢C</label>
+							</div>
+							<div>
+								<input type="radio" id="D" name="answer" class="hidden peer"><label for="D" class="flex justify-center border-t-2 border-b-2 w-screen border-gray-200 p-2 text-2xl hover:bg-green-200 peer-checked:bg-green-200">選択肢D</label>						
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--ランキング-->
+		<div>
+
+		</div>
+			<!--トップに戻る-->
+		</section>
+		<footer class="m-5 text-center">
+		  <p>©2022 INIAD-FES実行委員会</p>
+</footer>
+		<script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
 	</body>
 </html>
