@@ -16,11 +16,15 @@ let messageParagraph = document.getElementById('message-paragraph');
 quizSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     const messageType = data.messageType;
+    const quizId; // 出題される問題のID、quizOpenを受信したときに代入
     /* ページに待機中の画面が表示されている場合、回答画面に切り替える */
     document.getElementById('waiting').style.visibility = 'hidden';
     
     /* messageTypeで場合分け */
     if (messageType === 'quizOpen') {
+        /* 問題のIdを記録 */
+        quizId = data.quizId;
+
         /* HTML上に問題文を表示 */
         document.getElementById('sentence-paragraph').innerText = data.sentence
         /* 回答欄挿入 */
@@ -43,8 +47,28 @@ quizSocket.onmessage = function(e) {
         choiceB.disabled = true;
         choiceC.disabled = true;
         choiceD.disabled = true;       
+
     } else if (messageType === 'announce') {
         /* メッセージ欄を書き換える */
         messageParagraph.innerText = data.textMessage;
+
+    } else if (messageType === 'answerSentRequest') {
+        /* 回答を取得 checkedValueは参加者の回答 choicesは選択肢すべてのelement*/
+        let checkedValue;
+        let choices = document.getElementsByName('answer');
+        for (let i=0; i<4; i++) {
+            if (choices.item(i).checked){
+                checkedValue = choices.item(i).value;
+            }
+        }
+
+        /* 送信 */
+        quizSocket.send(JSON.stringify({
+            'messageType': 'answerSent',
+            'userId': window.sessionStorage.getItem('uuid'),
+            'quizId': quizId,
+            'choice': checkedValue,
+
+        })
     }
 }
