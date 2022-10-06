@@ -43,5 +43,8 @@ quizSocket.onmessage = function(e) {
         choiceB.disabled = true;
         choiceC.disabled = true;
         choiceD.disabled = true;       
+    } else if (messageType === 'announce') {
+        /* メッセージ欄を書き換える */
+        messageParagraph.innerText = data.textMessage;
     }
 }
