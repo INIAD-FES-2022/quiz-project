@@ -70,5 +70,23 @@ quizSocket.onmessage = function(e) {
             'choice': checkedValue,
 
         })
+    } else if (messageType === 'scoringResult') {
+        /* サーバから送られた正答 */
+        let correctChoice = data.correctChoice;
+
+        /* ユーザの回答が正しかったかどうかで表示する画面を切り替える */
+        let isCorrect = data.correctChoice;
+        if (isCorrect) {
+            /* 正解画面のメッセージを書き換え */
+            document.getElementById('correctMessage').innerText = correctChoice;
+            /* 正解画面を表示 */
+            document.getElementById('correct').style.visibility = 'hidden';
+
+    } else {
+            /* 不正解画面のメッセージを書き換え */
+            document.getElementById('incorrectMessage').innerText = correctChoice;
+            /* 不正解画面を表示 */
+            document.getElementById('incorrect').style.visibility = 'hidden';
+
     }
 }
