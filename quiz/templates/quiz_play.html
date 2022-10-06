@@ -21,7 +21,7 @@
 					</svg>                       
 				</button>
 				-->
-			<p class="text-xl mr-5">INIAD-Qにようこそ!</p>
+			<p id="message-paragraph" class="text-xl mr-5">INIAD-Qにようこそ!</p>
 		</div>
 	</header>
 	<!--コンテンツ-->
@@ -42,7 +42,7 @@
 				<h2 class="text-4xl">正解！</h2>
 			</div>
 			<div class="flex justify-center items-center mt-5">
-				<p class="text-2xl">答えはAです。</p>
+				<p class="text-2xl">答えは<span id="correctMessage">A</span>です。</p>
 			</div>
 		</div>
 		<!--不正解-->
@@ -54,7 +54,7 @@
 				<h2 class="text-4xl">不正解！</h2>
 			</div>
 			<div class="flex justify-center items-center mt-5">
-				<p class="text-2xl">答えはAです。</p>
+				<p class="text-2xl">答えは<span id="incorrectMessage">A</span>です。</p>
 			</div>
 		</div>
 		<!--ランキング表示-->
@@ -151,16 +151,16 @@
 					<div class="flex justify-center border border-b-0 border-orange-200">
 						<div>
 							<div>
-								<input type="radio" id="A" name="answer" class="hidden peer"><label for="A" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-red-200 peer-checked:bg-red-200">選択肢A</label>
+								<input type="radio" id="A" name="answer" class="hidden peer"><label for="A" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-red-200 peer-checked:bg-red-200" value="A">選択肢A</label>
 							</div>
 							<div>
-								<input type="radio" id="B" name="answer" class="hidden peer"><label for="B" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-blue-200 peer-checked:bg-blue-200">選択肢B</label>
+								<input type="radio" id="B" name="answer" class="hidden peer"><label for="B" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-blue-200 peer-checked:bg-blue-200" value="B">選択肢B</label>
 							</div>
 							<div>
-								<input type="radio" id="C" name="answer" class="hidden peer"><label for="C" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-yellow-200 peer-checked:bg-yellow-200">選択肢C</label>
+								<input type="radio" id="C" name="answer" class="hidden peer"><label for="C" class="flex justify-center border-t-2 w-screen border-gray-200 p-2 text-2xl hover:bg-yellow-200 peer-checked:bg-yellow-200" value="C">選択肢C</label>
 							</div>
 							<div>
-								<input type="radio" id="D" name="answer" class="hidden peer"><label for="D" class="flex justify-center border-t-2 border-b-2 w-screen border-gray-200 p-2 text-2xl hover:bg-green-200 peer-checked:bg-green-200">選択肢D</label>						
+								<input type="radio" id="D" name="answer" class="hidden peer"><label for="D" class="flex justify-center border-t-2 border-b-2 w-screen border-gray-200 p-2 text-2xl hover:bg-green-200 peer-checked:bg-green-200" value="D">選択肢D</label>						
 							</div>
 						</div>
 					</div>
