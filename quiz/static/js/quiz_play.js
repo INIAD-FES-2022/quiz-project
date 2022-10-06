@@ -82,11 +82,27 @@ quizSocket.onmessage = function(e) {
             /* 正解画面を表示 */
             document.getElementById('correct').style.visibility = 'hidden';
 
-    } else {
+        } else {
             /* 不正解画面のメッセージを書き換え */
             document.getElementById('incorrectMessage').innerText = correctChoice;
             /* 不正解画面を表示 */
             document.getElementById('incorrect').style.visibility = 'hidden';
+        }
 
+    } else if (messageType === 'userIdSentRequest') {
+        /* ネームカードのIDを送信します */
+        quizSocket.send(JSON.stringify({
+            'userId': window.sessionStorage.getItem('uuid');
+        })
+
+    } else if (messageType === 'rankDisplay') {
+        /* 要件を検討 */
+    }
+    /* messageTypeで場合分け 終 */
+
+    /* WebSocket 切断時の動作 */
+    quizSocket.onclose = function (e) {
+        alert('クイズから切断されました。ページをリロードしてください。');
+        console.error('quizSocket closed unexpectedly.');
     }
 }
