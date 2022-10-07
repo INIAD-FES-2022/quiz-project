@@ -7,7 +7,6 @@ from quiz.quiz_functions import *
 
 # QuizConsumerクラス: WebSocketからの受け取ったものを処理するクラス
 class QuizConsumer( AsyncWebsocketConsumer ):
-    groups = []
     static_group = ['INIAD_FES_06_quiz_group']
 
     # WebSocket接続時の処理
@@ -19,8 +18,8 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
         except:
             print("Error: Incorrect parameter")
-
-        QuizConsumer.groups.append(self.uuid_str)
+            self.uuid_str = "Anonymous"
+            self.nickname = "Anonymous"
 
         # 全体送信用グループ
         await self.channel_layer.group_add(
@@ -45,7 +44,6 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             self.uuid_str,
             self.channel_name
         )
-        QuizConsumer.groups.remove(self.uuid_str)
 
     # WebSocketがデータを受信した時の処理
     async def receive( self, text_data ):
@@ -54,7 +52,7 @@ class QuizConsumer( AsyncWebsocketConsumer ):
         user = self.scope['user']
 
         # 管理者がデータを送信した場合の処理
-        if(user.is_authenticated):
+        if(user.is_superuser):
             # 中間、最終発表の際にランキングを更新する。
             if(text_data_json.get("messageType") == "userIdSentRequest"):
                 eId = text_data_json["eventId"]
