@@ -16,8 +16,9 @@ class QuizConsumer( AsyncWebsocketConsumer ):
         # useridが無い場合はuuidを生成する
         try:
             self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
+            self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
         except:
-            self.uuid_str = str(uuid.uuid4())
+            print("Error: Incorrect parameter")
 
         QuizConsumer.groups.append(self.uuid_str)
 
@@ -70,26 +71,11 @@ class QuizConsumer( AsyncWebsocketConsumer ):
                 uId = text_data_json["userId"]
                 qId = text_data_json["quizId"]
                 cId = text_data_json["choice"]
-                obj = UserAnswers(user=uId, quiz=qId, choice=cId)
+                usr_obj = UserData.objects.get_or_create(id=uId, defaults={"nickname": self.nickname})
+                obj = UserAnswers(user=usr_obj, quiz=qId, choice=cId)
                 obj.save()
-                
-                # 正誤判定を行ってそれぞれに返す
-                if cId == Quizzes.objects.get(id=qId).correctChoice:
-                    data = { 
-                        "messageType": "scoringResult", 
-                        "correctChoice": cId, 
-                        "isCorrect": True
-                    }
-                    await self.send( text_data = json.dumps( data ) )
-                else:
-                    data = { 
-                        "messageType": "scoringResult", 
-                        "correctChoice": Quizzes.objects.get(id=qId).correctChoice, 
-                        "isCorrect": False
-                    }
-                    await self.send( text_data = json.dumps( data ) )
-                
-                # 加点の一斉処理を行うタイミングが不明なため、実装のほどよろしくお願いします。
+
+                await self.send( text_data = json.dumps({"RequestStatus": "Success"}))
 
             elif(text_data_json.get("messageType") == "userIdSent"):
                 eId = text_data_json["eventId"]
