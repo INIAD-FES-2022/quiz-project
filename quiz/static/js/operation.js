@@ -29,7 +29,7 @@ function SendOperate(obj){
         let context = {}
         let text = document.getElementById("messageText").value;
         context["messageType"] = "announce";
-        context["textMassage"] = text;
+        context["textMessage"] = text;
         g_socket.send( JSON.stringify( context ) );
     }
     // 問題を締め切る
