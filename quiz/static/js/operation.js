@@ -45,7 +45,7 @@ function SendOperate(obj){
         g_socket.send( JSON.stringify( context ) );
     }
     // 中間発表（ユーザーIDの集計）
-    else if(opType == "非公開"){
+    else if(opType == "中間発表"){
         let context = {}
         context["messageType"] = "userIdSentRequest";
         g_socket.send( JSON.stringify( context ) );
