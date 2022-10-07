@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-import uuid
+import uuid, traceback
 
 from quiz.models import UserAnswers
 from quiz.quiz_functions import *
@@ -12,26 +12,39 @@ class QuizConsumer( AsyncWebsocketConsumer ):
     # WebSocket接続時の処理
     async def connect( self ):
         self.room_group_name = 'INIAD_FES_06_quiz_group'
-        # useridが無い場合はuuidを生成する
-        try:
-            self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
-            self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
-        except:
-            print("Error: Incorrect parameter")
-            self.uuid_str = "Anonymous"
-            self.nickname = "Anonymous"
 
-        # 全体送信用グループ
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
-        # 個別送信用グループ
-        await self.channel_layer.group_add(
-            self.uuid_str,
-            self.channel_name
-        )
-        await self.accept()
+        if self.scope["user"].is_superuser:
+            print("Connected admin user")
+            self.uuid_str = "NOT_USE"
+            self.nickname = "NOT_USE"
+
+            # 全体送信用グループ
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+            await self.accept()
+        else:
+            try:
+                self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
+                self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
+                # 個別送信用グループ
+                await self.channel_layer.group_add(
+                    self.uuid_str,
+                    self.channel_name
+                )
+                # 全体送信用グループ
+                await self.channel_layer.group_add(
+                    self.room_group_name,
+                    self.channel_name
+                )
+                await self.accept()
+                
+            except Exception as err:
+                print("ERROR: ", *traceback.format_exception_only(type(err), err))
+                self.uuid_str = "NOT_USE"
+                await self.close()
+
 
     # WebSocket切断時の処理
     async def disconnect( self, close_code ):
