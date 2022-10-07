@@ -4,7 +4,6 @@
     <head>
         <meta charset="UTF-8">
         <title>クイズ管理サイト - 操作</title>
-        <script src="{% static 'js/operation.js' %}" async></script>
     </head>
     <body>
         <h1>クイズ管理サイト　操作画面</h1>
@@ -20,7 +19,7 @@
                 <h3>開催回がありません</h3>
             {% endif %}
             <!--待機中切り替え-->
-            <input type="button" value="スタート">
+            <input type="button" value="スタート" onclick="SendOperate(this); return false;">
         <h2>出題する問題を選択してください。</h2>
             <!--開催会と問題を選択する形？-->
             <select name="question" id="select_q">
@@ -33,23 +32,28 @@
                 {% endfor %}
             </select>
         <h2>問題の公開・非公開・採点ボタン</h2>
-            <input type="button" value="公開">
-            <input type="button" value="非公開">
-            <input type="button" value="採点">
+            <input type="button" value="公開" onclick="SendOperate(this); return false;">
+            <input type="button" value="非公開" onclick="SendOperate(this); return false;">
+            <input type="button" value="採点" onclick="SendOperate(this); return false;">
         <h2>回答者に送信するメッセージを入力してください。</h2>
-            <input type="text" name="message">
-            <input type="button" value="送信">
+            <input type="text" name="message" id="messageText">
+            <input type="button" value="送信" onclick="SendOperate(this); return false;">
         <h2>中間発表</h2>
-            <input type="button" value="中間発表">
+            <input type="button" value="中間発表" onclick="SendOperate(this); return false;">
         <h2>クイズ終了ボタン</h2>
-            <input type="button" value="終了">
+            <input type="button" value="終了" onclick="SendOperate(this); return false;">
 
         <p><a href="">トップページへ</a></p>
     </body>
 </html>
 
+<script src="{% static 'js/operation.js' %}" async></script>
+
 <script type="text/javascript">
+    // 外部のjsファイルではテンプレート言語が使用出来ないようです。
     const select_qs = document.getElementById("select_q");
+    const g_element_select_c = document.getElementById("select_c");
+    const g_element_select_q = document.getElementById("select_q");
     function select_comp(){
         let id = Number(document.getElementById("select_c").value);
         while( select_qs.firstChild ){
@@ -58,11 +62,33 @@
         '{% for qs in questions %}'
             if('{{ forloop.counter0 }}' == id){
                 '{% for q in qs %}'
-                    var text = '{{q.sentence}}';
+                    var text = '{{ q.sentence }}';
                     var new_element = document.createElement('option');
                     new_element.textContent = text;
-                    new_element.value = '{{q.id}}';
+                    new_element.value = '{{ q.id }}';
                     select_qs.appendChild(new_element);
+                '{% endfor %}'
+            }
+        '{% endfor %}'
+    }
+    function q_obj(){
+        let c_id = Number(g_element_select_c.value);
+        let q_id = Number(g_element_select_q.value);
+        '{% for qs in questions %}'
+            if('{{ forloop.counter0 }}' == c_id){
+                '{% for q in qs %}'
+                    if('{{ q.id }}' == q_id){
+                        q = {
+                            'ANSWER_CHOICES':'{{ q.ANSWER_CHOICES }}',
+                            'sentence':'{{ q.sentence }}',
+                            'choiceA':'{{ q.choiceA }}',
+                            'choiceB':'{{ q.choiceB }}',
+                            'choiceC':'{{ q.choiceC }}',
+                            'choiceD':'{{ q.choiceD }}',
+                            'correctChoice':'{{ q.correctChoice }}'
+                        }
+                        return q
+                    }
                 '{% endfor %}'
             }
         '{% endfor %}'

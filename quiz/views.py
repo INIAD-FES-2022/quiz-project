@@ -67,7 +67,7 @@ class ControlQuizHistory(ListView):
         context = super().get_context_data(**kwargs)
         lst=[]
         for obj in context["object_list"]:
-            lst.append(qfc.get_users_score(obj.id))
+            lst.append(qfc.get_users_score(obj.id).order_by("temp_rank"))
         context["event_ranking"] = lst
         return context
 
@@ -86,7 +86,6 @@ class ControlQuizOperate(ListView):
                 qs_lst.append(Questions.objects.get(pk=qz.question_id))
             lst.append(qs_lst)
         context["questions"] = lst
-        print(context)
         return context
 
 

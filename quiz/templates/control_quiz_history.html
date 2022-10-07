@@ -19,7 +19,7 @@
                     {% if forloop.counter0 == 0 %}
                         {% for rank in e_rank %}
                             <p>
-                                {{ rank.temp_rank }}位, 名前 {{rank.user}}, スコア {{rank.score}}, 正答数 {{rank.correctNums}}
+                                {{ rank.temp_rank }}位, 名前 {{ rank.user.pk }}, スコア {{ rank.score }}, 正答数 {{ rank.correctNums }}
                             </p>
                         {% endfor %}
                     {% endif %}
@@ -32,19 +32,20 @@
 </html>
 
 <script type="text/javascript">
+    // 外部のjsファイルではテンプレート言語が使用出来ないようです。
     const d_rank = document.getElementById("display_ranking");
     function select_ranking(){
         let id = Number(document.getElementById("quiz_events").value);
         while( d_rank.firstChild ){
             d_rank.removeChild( d_rank.firstChild );
         }
-        "{% for e_rank_lst in event_ranking %}"
+        "{% for e_rank in event_ranking %}"
             if("{{ forloop.counter0 }}" == id){
                 "{% for rank in e_rank %}"
-                var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{rank.user}}" + ", スコア " + "{{rank.score}}" + ", 正答数 " + "{{rank.correctNums}}";
-                var new_element = document.createElement('p');
-                new_element.textContent = text;
-                d_rank.appendChild(new_element);
+                    var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{ rank.user.pk }}" + ", スコア " + "{{ rank.score }}" + ", 正答数 " + "{{ rank.correctNums }}";
+                    var new_element = document.createElement('p');
+                    new_element.textContent = text;
+                    d_rank.appendChild(new_element);
                 "{% endfor %}"
             };
         "{% endfor %}"
