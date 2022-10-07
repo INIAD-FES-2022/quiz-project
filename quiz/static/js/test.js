@@ -12,9 +12,9 @@ function socket(){
 // WebSocketからデータ受信時の処理
 g_socket.onmessage = ( event ) =>
 {
-    console.log(event);
     // テキストデータをJSONデータにデコード
     let data = JSON.parse( event.data );
+    console.log(data);
 
     g_element_textdisplay.textContent = data["content"];
 
