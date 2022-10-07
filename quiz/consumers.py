@@ -71,7 +71,7 @@ class QuizConsumer( AsyncWebsocketConsumer ):
                 uId = text_data_json["userId"]
                 qId = text_data_json["quizId"]
                 cId = text_data_json["choice"]
-                usr_obj = UserData.objects.get_or_create(id=uId, defaults={"nickname": self.nickname})
+                usr_obj, _ = UserData.objects.get_or_create(id=uId, defaults={"nickname": self.nickname})
                 obj = UserAnswers(user=usr_obj, quiz=qId, choice=cId)
                 obj.save()
 
