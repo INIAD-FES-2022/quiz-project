@@ -51,8 +51,7 @@ quizSocket.onmessage = function(e) {
     } else if (messageType === 'announce') {
         /* メッセージ欄を書き換える */
         messageParagraph.innerText = data.textMessage;
-
-    } else if (messageType === 'answerSentRequest') {
+} else if (messageType === 'answerSentRequest') {
         /* 回答を取得 checkedValueは参加者の回答 choicesは選択肢すべてのelement*/
         let checkedValue;
         let choices = document.getElementsByName('answer');
@@ -96,7 +95,28 @@ quizSocket.onmessage = function(e) {
         })
 
     } else if (messageType === 'rankDisplay') {
-        /* 要件を検討 */
+        /* 送られてきたスコアと順位に書き換えます */
+        let score = data.score;
+        let rank = data.rank;
+        document.getElementById('rank').innerText = String(score);
+        docuemnt.getElementById('score').innerText = String(rank);
+        
+        /* 最終発表の場合の表示 */
+        if (data.isFin) {
+            document.getElementById('ranking-back-to-toppage').style.visibility = 'visible';
+            document.getElementById('ranking-head').innerText = '最終発表';
+        } 
+        /* 中間発表の場合 */
+        else {
+            let rankingClose = document.getElementById('ranking-close')
+            rankingClose.style.visibility = 'visible';
+            rankingClose.onclick = function () {
+                document.getElementById('ranking').style.visibility = 'hidden'; 
+        }    
+
+        /* ランキングを表示 */
+        document.getElementById('ranking').style.visibility = 'visible';
+
     }
     /* messageTypeで場合分け 終 */
 
