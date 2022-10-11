@@ -1,42 +1,50 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-import uuid
+import uuid, traceback
 
 from quiz.models import UserAnswers
 from quiz.quiz_functions import *
 
 # QuizConsumerクラス: WebSocketからの受け取ったものを処理するクラス
 class QuizConsumer( AsyncWebsocketConsumer ):
-    groups = []
     static_group = ['INIAD_FES_06_quiz_group']
 
     # WebSocket接続時の処理
     async def connect( self ):
         self.room_group_name = 'INIAD_FES_06_quiz_group'
-        # useridが無い場合はuuidを生成する
-        try:
-            self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
-        except:
-            self.uuid_str = str(uuid.uuid4())
-        print(self.uuid_str)
-        print(self.room_group_name)
-        print(self.channel_name)
-        print(QuizConsumer.groups)
-        print(QuizConsumer.static_group)
 
-        QuizConsumer.groups.append(self.uuid_str)
+        if self.scope["user"].is_superuser:
+            print("Connected admin user")
+            self.uuid_str = "NOT_USE"
+            self.nickname = "NOT_USE"
 
-        # 全体送信用グループ
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
-        # 個別送信用グループ
-        await self.channel_layer.group_add(
-            self.uuid_str,
-            self.channel_name
-        )
-        await self.accept()
+            # 全体送信用グループ
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+            await self.accept()
+        else:
+            try:
+                self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
+                self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
+                # 個別送信用グループ
+                await self.channel_layer.group_add(
+                    self.uuid_str,
+                    self.channel_name
+                )
+                # 全体送信用グループ
+                await self.channel_layer.group_add(
+                    self.room_group_name,
+                    self.channel_name
+                )
+                await self.accept()
+                
+            except Exception as err:
+                print("ERROR: ", *traceback.format_exception_only(type(err), err))
+                self.uuid_str = "NOT_USE"
+                await self.close()
+
 
     # WebSocket切断時の処理
     async def disconnect( self, close_code ):
@@ -49,7 +57,6 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             self.uuid_str,
             self.channel_name
         )
-        QuizConsumer.groups.remove(self.uuid_str)
 
     # WebSocketがデータを受信した時の処理
     async def receive( self, text_data ):
@@ -58,7 +65,7 @@ class QuizConsumer( AsyncWebsocketConsumer ):
         user = self.scope['user']
 
         # 管理者がデータを送信した場合の処理
-        if(user.is_authenticated):
+        if(user.is_superuser):
             # 中間、最終発表の際にランキングを更新する。
             if(text_data_json.get("messageType") == "userIdSentRequest"):
                 eId = text_data_json["eventId"]
@@ -75,26 +82,11 @@ class QuizConsumer( AsyncWebsocketConsumer ):
                 uId = text_data_json["userId"]
                 qId = text_data_json["quizId"]
                 cId = text_data_json["choice"]
-                obj = UserAnswers(user=uId, quiz=qId, choice=cId)
+                usr_obj, _ = UserData.objects.get_or_create(id=uId, defaults={"nickname": self.nickname})
+                obj = UserAnswers(user=usr_obj, quiz=qId, choice=cId)
                 obj.save()
-                
-                # 正誤判定を行ってそれぞれに返す
-                if cId == Quizzes.objects.get(id=qId).correctChoice:
-                    data = { 
-                        "messageType": "scoringResult", 
-                        "correctChoice": cId, 
-                        "isCorrect": True
-                    }
-                    await self.send( text_data = json.dumps( data ) )
-                else:
-                    data = { 
-                        "messageType": "scoringResult", 
-                        "correctChoice": Quizzes.objects.get(id=qId).correctChoice, 
-                        "isCorrect": False
-                    }
-                    await self.send( text_data = json.dumps( data ) )
-                
-                # 加点の一斉処理を行うタイミングが不明なため、実装のほどよろしくお願いします。
+
+                await self.send( text_data = json.dumps({"RequestStatus": "Success"}))
 
             elif(text_data_json.get("messageType") == "userIdSent"):
                 eId = text_data_json["eventId"]

@@ -5,6 +5,7 @@ import uuid
 # クイズ用のユーザデータを保持。
 class UserData(models.Model):
     id = models.UUIDField(primary_key=True)
+    nickname = models.CharField(max_length=50, verbose_name="ニックネーム", default="名無しさん")
 
 
 # 開催回を保持。

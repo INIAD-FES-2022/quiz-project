@@ -1,8 +1,8 @@
-from msilib.schema import ListView
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -13,13 +13,20 @@ from django import forms
 import quiz.quiz_functions as qfc
 # Create your views here.
 
-class ControlQuizEvents(ListView):
+# 管理者認証用Mixin
+class SuperuserRequiredMixin(UserPassesTestMixin):
+    login_url = reverse_lazy("admin:login")
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+class ControlQuizEvents(SuperuserRequiredMixin, ListView):
     model = QuizEvents
     fields = ["id", "name"]
     template_name = "control_quiz_events.html"
 
 
-class ControlQuizEventsDetail(SingleObjectMixin, ListView):
+class ControlQuizEventsDetail(SuperuserRequiredMixin, SingleObjectMixin, ListView):
     template_name = "control_quiz_events_detail.html"
 
     def get(self, request, *args, **kwargs):
@@ -36,7 +43,7 @@ class ControlQuizEventsDetail(SingleObjectMixin, ListView):
         return context
     
 
-class ControlQuizEventsAddQuiz(CreateView):
+class ControlQuizEventsAddQuiz(SuperuserRequiredMixin, CreateView):
     model = Quizzes
     fields = ["question"]
     template_name = "control_quiz_events_add_quiz.html"
@@ -57,6 +64,36 @@ class ControlQuizEventsAddQuiz(CreateView):
     
     def get_success_url(self):
         return reverse("control_quiz_events_detail", kwargs={"pk": self.kwargs["pk"]})
+
+class ControlQuizHistory(SuperuserRequiredMixin, ListView):
+    model = QuizEvents
+    fields = ["id", "name"]
+    template_name = "control_quiz_history.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lst=[]
+        for obj in context["object_list"]:
+            lst.append(qfc.get_users_score(obj.id).order_by("temp_rank"))
+        context["event_ranking"] = lst
+        return context
+
+class ControlQuizOperate(SuperuserRequiredMixin, ListView):
+    model = QuizEvents
+    fields = ["id", "name"]
+    template_name = "control_quiz_operate.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lst=[]
+        for obj in context["object_list"]:
+            qs_lst = []
+            qz_lst = Quizzes.objects.filter(event=obj.id)
+            for qz in qz_lst:
+                qs_lst.append(Questions.objects.get(pk=qz.question_id))
+            lst.append(qs_lst)
+        context["questions"] = lst
+        return context
 
 
 def debugTop(request):

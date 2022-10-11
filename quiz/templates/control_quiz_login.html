@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>クイズ管理サイト - ログイン</title>
+    </head>
+    <body>
+        <h1>クイズ管理サイト　ログイン</h1>
+        <form method="post" action="{% url '' %}">
+            {% csrf_token %}
+            
+            <label for="userid">ユーザ名: </label>
+            <input type="text" name="userid">
+            <label for="password">パスワード: </label>
+            <input type="password" name="password">
+
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>
