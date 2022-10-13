@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    path("", views.ControlQuizTop.as_view(), name="control_quiz_top"),
     path("control/", views.ControlQuizEvents.as_view(), name="control_quiz_events"),
     path("control/<int:pk>", views.ControlQuizEventsDetail.as_view(), name="control_quiz_events_detail"),
     path("control/<int:pk>/add_quiz", views.ControlQuizEventsAddQuiz.as_view(), name="control_quiz_events_add_quiz"),

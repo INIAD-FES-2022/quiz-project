@@ -20,6 +20,9 @@ class SuperuserRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_superuser
 
+class ControlQuizTop(SuperuserRequiredMixin, TemplateView):
+    template_name = "control_quiz_toppage.html"
+
 class ControlQuizEvents(SuperuserRequiredMixin, ListView):
     model = QuizEvents
     fields = ["id", "name"]
@@ -76,6 +79,7 @@ class ControlQuizHistory(SuperuserRequiredMixin, ListView):
         for obj in context["object_list"]:
             lst.append(qfc.get_users_score(obj.id).order_by("temp_rank"))
         context["event_ranking"] = lst
+        print(context)
         return context
 
 class ControlQuizOperate(SuperuserRequiredMixin, ListView):
