@@ -87,12 +87,15 @@ class ControlQuizOperate(SuperuserRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         lst=[]
         for obj in context["object_list"]:
-            qs_lst = []
-            qz_lst = Quizzes.objects.filter(event=obj.id)
+            qz_lst = Quizzes.objects.select_related("question").filter(event=obj.id)
+            """
+            # Quizzesのpk(出題ごとに一意)で採点も行うためQuizzesオブジェクトで取得。
             for qz in qz_lst:
                 qs_lst.append(Questions.objects.get(pk=qz.question_id))
-            lst.append(qs_lst)
+            """
+            lst.append(qz_lst)
         context["questions"] = lst
+        print(context["questions"])
         return context
 
 

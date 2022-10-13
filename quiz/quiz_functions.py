@@ -1,6 +1,8 @@
 from quiz.models import Questions, UserAnswers, Quizzes, UserData, QuizEvents, UserScores
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+import traceback
+
 
 # クイズに対しての採点結果を取得する。
 # target_quiz_uuid: 採点したいクイズのUUID。
@@ -79,6 +81,9 @@ def get_users_score(target_event_id, target_user_uuid=None):
 # target_event_id: クイズ大会の開催回のID。
 # この関数を実行時に、UserScoresのtemp_rankが更新される。
 def update_ranking(target_event_id):
+    if target_event_id is None:
+        return -1
+    
     event_joined_users = UserScores.objects.filter(event=target_event_id).order_by("-score")  # 指定した開催回のユーザのスコアを、scoreが高い順で取得。
 
     # 同率順位を計算しながらランキングを更新。
@@ -94,6 +99,8 @@ def update_ranking(target_event_id):
         user.temp_rank = rank
         before_score = user.score
         user.save()
+    
+    return 0
 
 # ユーザへメッセージを送信する。
 # dst_user_uuid: 送信先となるユーザのUUID
@@ -118,3 +125,67 @@ def all_user_send_message(message):
             "message": message,
         }
     )
+
+# 採点の一連の流れ
+# quiz_uuid: 採点する対象のクイズ
+# points: 加算したい点数
+def sequence_scoring(quiz_uuid, points):
+    quiz = Quizzes.objects.get(id=quiz_uuid)
+    scored_users = get_scored_users(quiz_uuid)
+    
+    users_add_score(quiz.event.id, scored_users.get("correct"), points, True)
+
+    message = {
+        "messageType": "scoringResult",
+        "correctChoice": quiz.question.correctChoice,
+        "isCorrect": None,
+    }
+
+    message["isCorrect"] = True
+    for user in scored_users.get("correct"):
+        user_send_message(user, message)
+        print(message)
+    
+    message["isCorrect"] = False
+    for user in scored_users.get("incorrect"):
+        user_send_message(user, message)
+        print(message)
+    
+    return 0
+
+# 中間・最終発表の一連の流れ
+# event_id: 発表する対象の開催回
+# is_fin: 中間か最終かのフラグ
+def sequence_rank_display(event_id, is_fin):
+    err = update_ranking(event_id)
+    if err < 0:
+        return -1
+    
+    users_score = get_users_score(event_id)
+
+    for user in users_score:
+        message = {
+            "messageType": "rankDisplay",
+            "rank": user.temp_rank,
+            "score": user.score,
+            "correctNums": user.correctNums,
+            "isFin": is_fin,
+        }
+        user_send_message(user.user.id, message)
+        print(message)
+    
+    return 0
+
+
+def sequence_save_user_answer(quiz_uuid, user_uuid, user_nickname, choice):
+    try:
+        usr_obj, _ = UserData.objects.get_or_create(id=user_uuid, defaults={"nickname": user_nickname})
+        quiz_obj = Quizzes.objects.get(id=quiz_uuid)
+        obj = UserAnswers(user=usr_obj, quiz=quiz_obj, choice=choice)
+        obj.save()
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+
+
+    return 0
