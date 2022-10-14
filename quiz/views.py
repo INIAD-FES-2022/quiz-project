@@ -115,6 +115,10 @@ class IndexView(ListView):
         return context
 
 
+class QuizPlayView(TemplateView):
+    template_name = "quiz_play.html"
+
+
 def debugTop(request):
     return HttpResponse("Debug Top!")
 
