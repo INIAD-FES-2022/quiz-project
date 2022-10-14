@@ -15,6 +15,7 @@ function SendOperate(obj){
         let context_raw = q_obj();
         console.log(context_raw);
         context["messageType"] = "quizOpen";
+        context["quizId"] = document.getElementById("select_q").value;
         context["sentence"] = context_raw["sentence"];
         context["choices"] = [
             context_raw["choiceA"],
@@ -49,11 +50,13 @@ function SendOperate(obj){
     // 中間発表（ユーザーIDの集計）
     else if(opType == "中間発表"){
         context["messageType"] = "rankDisplayRequest";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
         context["isFin"] = false;
         g_socket.send( JSON.stringify( context ) );
     }
     else if(opType == "最終発表"){
         context["messageType"] = "rankDisplayRequest";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
         context["isFin"] = true;
         g_socket.send( JSON.stringify( context ) );
     }
