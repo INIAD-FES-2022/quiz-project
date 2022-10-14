@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -21,6 +22,9 @@ class SuperuserRequiredMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+class ControlQuizTop(SuperuserRequiredMixin, TemplateView):
+    template_name = "control_quiz_toppage.html"
 
 class ControlQuizEvents(SuperuserRequiredMixin, ListView):
     model = QuizEvents
@@ -78,6 +82,7 @@ class ControlQuizHistory(SuperuserRequiredMixin, ListView):
         for obj in context["object_list"]:
             lst.append(qfc.get_users_score(obj.id).order_by("temp_rank"))
         context["event_ranking"] = lst
+        print(context)
         return context
 
 class ControlQuizOperate(SuperuserRequiredMixin, ListView):
@@ -89,14 +94,16 @@ class ControlQuizOperate(SuperuserRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         lst=[]
         for obj in context["object_list"]:
-            qs_lst = []
-            qz_lst = Quizzes.objects.filter(event=obj.id)
+            qz_lst = Quizzes.objects.select_related("question").filter(event=obj.id)
+            """
+            # Quizzesのpk(出題ごとに一意)で採点も行うためQuizzesオブジェクトで取得。
             for qz in qz_lst:
                 qs_lst.append(Questions.objects.get(pk=qz.question_id))
-            lst.append(qs_lst)
+            """
+            lst.append(qz_lst)
         context["questions"] = lst
+        print(context["questions"])
         return context
-
 
 class IndexView(ListView):
     model = UserScores
@@ -105,7 +112,6 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['userScores'] = UserScores.objects.filter(temp_rank__range=(1,10), event=QuizEvents.objects.latest('name'));
-
         return context
 
 
@@ -127,51 +133,6 @@ def dbgQuizOpen(request, quizUuid):
     qfc.all_user_send_message(message)
 
     return HttpResponse("Successfully opened quiz.")
-
-def dbgScoring(request, quizUuid):
-    quiz = Quizzes.objects.get(id=quizUuid)
-    scored_users = qfc.get_scored_users(quizUuid)
-    
-    qfc.users_add_score(quiz.event.id, scored_users.get("correct"), 20, True)
-
-    message = {
-        "messageType": "scoringResult",
-        "correctChoice": quiz.question.correctChoice,
-        "isCorrect": None,
-    }
-
-    message["isCorrect"] = True
-    for user in scored_users.get("correct"):
-        qfc.user_send_message(user, message)
-    
-    message["isCorrect"] = False
-    for user in scored_users.get("incorrect"):
-        qfc.user_send_message(user, message)
-    
-    context = {
-        "quiz": quiz,
-        "object_list": scored_users,
-    }
-    return render(request, "dbg_scoring.html", context)
-
-def dbgSendRanking(request, event_id):
-    qfc.update_ranking(event_id)
-    users_score = qfc.get_users_score(event_id)
-
-    for user in users_score:
-        message = {
-            "messageType": "rankDisplay",
-            "rank": user.temp_rank,
-            "score": user.score,
-            "correctNums": user.correctNums,
-        }
-        qfc.user_send_message(user.user.id, message)
-
-    context = {
-        "object_list": users_score,
-    }
-    
-    return render(request, "dbg_sendranking.html", context)
 
 
 class dbgQuestionsList(ListView):

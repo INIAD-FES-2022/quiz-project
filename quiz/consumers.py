@@ -1,8 +1,12 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-import uuid, traceback
+from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
+import traceback
+from urllib.parse import parse_qs
+from django.utils import timezone
+from datetime import datetime
 
-from quiz.models import UserAnswers
 from quiz.quiz_functions import *
 
 # QuizConsumerクラス: WebSocketからの受け取ったものを処理するクラス
@@ -26,8 +30,10 @@ class QuizConsumer( AsyncWebsocketConsumer ):
             await self.accept()
         else:
             try:
-                self.uuid_str = self.scope["url_route"]["kwargs"]["userid"]
-                self.nickname = self.scope["url_route"]["kwargs"]["nickname"]
+                query_params = parse_qs(self.scope["query_string"].decode())
+                print(query_params)
+                self.uuid_str = query_params["userid"][0]
+                self.nickname = query_params["nickname"][0]
                 # 個別送信用グループ
                 await self.channel_layer.group_add(
                     self.uuid_str,
@@ -62,49 +68,41 @@ class QuizConsumer( AsyncWebsocketConsumer ):
     async def receive( self, text_data ):
         # 受信データをJSONデータに復元
         text_data_json = json.loads( text_data )
-        user = self.scope['user']
+
+        print("[{}] Received WebSocket:".format(datetime.strftime(timezone.now(), '%m-%d %H:%M:%S:%f')), text_data_json)
 
         # 管理者がデータを送信した場合の処理
-        if(user.is_superuser):
-            # 中間、最終発表の際にランキングを更新する。
-            if(text_data_json.get("messageType") == "userIdSentRequest"):
-                eId = text_data_json["eventId"]
-                update_ranking(eId)
-
-            # 受信処理関数の追加
-            text_data_json["type"]="spread_send"
-            await self.channel_layer.group_send( self.room_group_name, text_data_json )
+        if(self.scope['user'].is_superuser):
+            if (text_data_json.get("messageType") == "rankDisplayRequest"):  # 中間、最終発表
+                event_id = text_data_json.get("eventId")
+                is_fin = text_data_json.get("isFin")
+                err = await database_sync_to_async(sequence_rank_display)(event_id, is_fin)
+                await self.send(text_data=json.dumps( {"RequestSuccessed": err >= 0} ))
+            elif (text_data_json.get("messageType") == "scoring"):  # 採点
+                quiz_uuid = text_data_json.get("quizId")
+                err = await database_sync_to_async(sequence_scoring)(quiz_uuid, 10)
+                await self.send(text_data=json.dumps( {"RequestSuccessed": err >= 0} ))
+            else:  # roomActive, quizOpen, announce, quizClose, answerSentRequest
+                # 受信処理関数の追加
+                text_data_json["type"]="spread_send"
+                await self.channel_layer.group_send( self.room_group_name, text_data_json )
 
         # 参加者がデータを送信した場合の処理
         else:
             if(text_data_json.get("messageType") == "answerSent"):
                 # 回答の保存
-                uId = text_data_json["userId"]
-                qId = text_data_json["quizId"]
-                cId = text_data_json["choice"]
-                usr_obj, _ = UserData.objects.get_or_create(id=uId, defaults={"nickname": self.nickname})
-                obj = UserAnswers(user=usr_obj, quiz=qId, choice=cId)
-                obj.save()
+                quiz_uuid = text_data_json["quizId"]
+                choice = text_data_json["choice"]
 
-                await self.send( text_data = json.dumps({"RequestStatus": "Success"}))
+                user_uuid = self.uuid_str
+                user_nickname = self.nickname
 
-            elif(text_data_json.get("messageType") == "userIdSent"):
-                eId = text_data_json["eventId"]
-                uId = text_data_json["userId"]
-                isFin = text_data_json["isFin"]
-                uScore = get_users_score(eId, uId)
-                data = {
-                    "messageType": "rankDisplay",
-                    "rank": uScore.temp_rank,
-                    "score": uScore.score,
-                    "isFin": isFin,
-                }
-                self.send( text_data = json.dumps( data ) )
+                err = await database_sync_to_async(sequence_save_user_answer)(quiz_uuid, user_uuid, user_nickname, choice)
 
+                await self.send( text_data = json.dumps({"RequestSuccessed": err >= 0}))
             else:
                 # 受信処理関数の追加
-                text_data_json["type"]="spread_send"
-                await self.channel_layer.group_send( self.room_group_name, text_data_json )
+                await self.send(text_data=json.dumps({"RequestSuccessed": False}))
 
     # 拡散データ受信時の処理
     # （self.channel_layer.group_send()の結果、グループ内の全コンシューマーにメッセージ拡散され、各コンシューマーは本関数で受信処理します）

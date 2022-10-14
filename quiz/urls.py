@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    path("", views.ControlQuizTop.as_view(), name="control_quiz_top"),
     path("control/", views.ControlQuizEvents.as_view(), name="control_quiz_events"),
     path("control/<int:pk>", views.ControlQuizEventsDetail.as_view(), name="control_quiz_events_detail"),
     path("control/<int:pk>/add_quiz", views.ControlQuizEventsAddQuiz.as_view(), name="control_quiz_events_add_quiz"),
@@ -17,7 +18,5 @@ urlpatterns = [
     path("debug/quizzes/", views.dbgQuizzesList.as_view(), name="quizzes_list"),
     path("debug/quizzes/create", views.dbgQuizzesCreate.as_view()),
     path("debug/quizzes/<uuid:quizUuid>/open", views.dbgQuizOpen),
-    path("debug/scoring/<uuid:quizUuid>", views.dbgScoring),
     path("debug/socket/", views.dbgSocket.as_view()),
-    path("debug/sendranking/<int:event_id>", views.dbgSendRanking),
 ]

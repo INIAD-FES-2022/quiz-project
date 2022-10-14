@@ -22,75 +22,75 @@
             <input type="button" value="スタート" onclick="SendOperate(this); return false;">
         <h2>出題する問題を選択してください。</h2>
             <!--開催会と問題を選択する形？-->
-            <select name="question" id="select_q">
-                {% for qs in questions %}
-                    {% if forloop.counter0 == 0 %}
-                        {% for q in qs %}
-                            <option value="{{ q.id }}">{{ q.sentence }}</option>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-            </select>
-        <h2>問題の公開・非公開・採点ボタン</h2>
+            <select name="question" id="select_q"></select>
+        <h2>問題の公開・非公開・回収・採点ボタン</h2>
             <input type="button" value="公開" onclick="SendOperate(this); return false;">
             <input type="button" value="非公開" onclick="SendOperate(this); return false;">
+            <input type="button" value="回収" onclick="SendOperate(this); return false;">
             <input type="button" value="採点" onclick="SendOperate(this); return false;">
         <h2>回答者に送信するメッセージを入力してください。</h2>
             <input type="text" name="message" id="messageText">
             <input type="button" value="送信" onclick="SendOperate(this); return false;">
         <h2>中間発表</h2>
             <input type="button" value="中間発表" onclick="SendOperate(this); return false;">
+        <h2>最終発表</h2>
+            <input type="button" value="最終発表" onclick="SendOperate(this); return false;">
         <h2>クイズ終了ボタン</h2>
             <input type="button" value="終了" onclick="SendOperate(this); return false;">
 
-        <p><a href="">トップページへ</a></p>
-    </body>
-</html>
+        <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
 
-<script src="{% static 'js/operation.js' %}" async></script>
-
-<script type="text/javascript">
-    // 外部のjsファイルではテンプレート言語が使用出来ないようです。
-    const select_qs = document.getElementById("select_q");
-    const g_element_select_c = document.getElementById("select_c");
-    const g_element_select_q = document.getElementById("select_q");
-    function select_comp(){
-        let id = Number(document.getElementById("select_c").value);
-        while( select_qs.firstChild ){
-            select_qs.removeChild( select_qs.firstChild );
-        }
-        '{% for qs in questions %}'
-            if('{{ forloop.counter0 }}' == id){
-                '{% for q in qs %}'
-                    var text = '{{ q.sentence }}';
-                    var new_element = document.createElement('option');
-                    new_element.textContent = text;
-                    new_element.value = '{{ q.id }}';
-                    select_qs.appendChild(new_element);
-                '{% endfor %}'
-            }
-        '{% endfor %}'
-    }
-    function q_obj(){
-        let c_id = Number(g_element_select_c.value);
-        let q_id = Number(g_element_select_q.value);
-        '{% for qs in questions %}'
-            if('{{ forloop.counter0 }}' == c_id){
-                '{% for q in qs %}'
-                    if('{{ q.id }}' == q_id){
-                        q = {
-                            'ANSWER_CHOICES':'{{ q.ANSWER_CHOICES }}',
-                            'sentence':'{{ q.sentence }}',
-                            'choiceA':'{{ q.choiceA }}',
-                            'choiceB':'{{ q.choiceB }}',
-                            'choiceC':'{{ q.choiceC }}',
-                            'choiceD':'{{ q.choiceD }}',
-                            'correctChoice':'{{ q.correctChoice }}'
-                        }
-                        return q
+        <script type="text/javascript">
+            // 外部のjsファイルではテンプレート言語が使用出来ないようです。
+            const select_qs = document.getElementById("select_q");
+            const g_element_select_c = document.getElementById("select_c");
+            const g_element_select_q = document.getElementById("select_q");
+            function select_comp(){
+                let id = Number(document.getElementById("select_c").value);
+                while( select_qs.firstChild ){
+                    select_qs.removeChild( select_qs.firstChild );
+                }
+                '{% for qs in questions %}'
+                    if('{{ forloop.counter0 }}' == id){
+                        '{% for q in qs %}'
+                            var text = '{{ q.question.sentence }}';
+                            var new_element = document.createElement('option');
+                            new_element.textContent = text;
+                            new_element.value = '{{ q.id }}';
+                            select_qs.appendChild(new_element);
+                        '{% endfor %}'
                     }
                 '{% endfor %}'
             }
-        '{% endfor %}'
-    }
-</script>
+            function q_obj(){
+                let c_id = g_element_select_c.value;
+                let q_id = g_element_select_q.value;
+                '{% for qs in questions %}'
+                    if('{{ forloop.counter0 }}' == c_id){
+                        '{% for q in qs %}'
+                            if('{{ q.id }}' == q_id){
+                                q = {
+                                    //'ANSWER_CHOICES':'{{ q.ANSWER_CHOICES }}',
+                                    'sentence':'{{ q.question.sentence }}',
+                                    'choiceA':'{{ q.question.choiceA }}',
+                                    'choiceB':'{{ q.question.choiceB }}',
+                                    'choiceC':'{{ q.question.choiceC }}',
+                                    'choiceD':'{{ q.question.choiceD }}',
+                                    'correctChoice':'{{ q.question.correctChoice }}'
+                                }
+                                return q
+                            }
+                        '{% endfor %}'
+                    }
+                '{% endfor %}'
+            }
+        
+            select_comp();
+        </script>
+        
+        <script src="{% static 'js/operation.js' %}" async></script>
+    </body>
+</html>
+
+
+
