@@ -7,6 +7,7 @@
     </head>
     <body>
         <h1>クイズ管理サイト　操作画面</h1>
+        <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
         <h2>クイズ開催</h2>
             <!--開催会選択-->
             {% if object_list %}                
@@ -38,7 +39,7 @@
         <h2>クイズ終了ボタン</h2>
             <input type="button" value="終了" onclick="SendOperate(this); return false;">
 
-        <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
+        
 
         <script type="text/javascript">
             // 外部のjsファイルではテンプレート言語が使用出来ないようです。
