@@ -69,36 +69,11 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for userScore in userScores %}
 						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
+							<td class="px-4 py-3">{{ userScore.temp_rank }}</td><td class="px-4 py-3">{{ userScore.uuid }}</td><td class="px-4 py-3">{{ userScore.score }}</td>
 						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
-						<tr>
-							<td class="px-4 py-3">1</td><td class="px-4 py-3">イニャー</td><td class="px-4 py-3">110</td>
-						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>

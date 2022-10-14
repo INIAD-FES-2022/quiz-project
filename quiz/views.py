@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
+from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
@@ -103,8 +104,7 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ranking'] = UserScores.objects.filter(temp_rank__range=(1,10));
-        context['quizEvents'] = QuizEvents.objects.all();
+        context['userScores'] = UserScores.objects.filter(temp_rank__range=(1,10), event=QuizEvents.objects.latest('name'));
 
         return context
 
