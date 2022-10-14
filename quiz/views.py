@@ -3,11 +3,12 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic import TemplateView
-from quiz.models import Questions, QuizEvents, UserAnswers, Quizzes
+from quiz.models import Questions, QuizEvents, UserAnswers, Quizzes, UserScores
 from django import forms
 
 import quiz.quiz_functions as qfc
@@ -93,6 +94,18 @@ class ControlQuizOperate(SuperuserRequiredMixin, ListView):
                 qs_lst.append(Questions.objects.get(pk=qz.question_id))
             lst.append(qs_lst)
         context["questions"] = lst
+        return context
+
+
+class IndexView(ListView):
+    model = UserScores
+    template_name = "index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ranking'] = UserScores.objects.filter(temp_rank__range=(1,10));
+        context['quizEvents'] = QuizEvents.objects.all();
+
         return context
 
 
