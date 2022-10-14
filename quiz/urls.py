@@ -9,7 +9,7 @@ urlpatterns = [
     path("control/history", views.ControlQuizHistory.as_view(), name="control_quiz_history"),
     path("control/operate", views.ControlQuizOperate.as_view(), name="control_quiz_operate"),
     path("index", views.IndexView.as_view(), name="index"),
-    #path("join", views.Join.as_view(), name="join"),
+    path("join", views.Join.as_view(), name="join"),
     path("debug/", views.debugTop),
     path("debug/questions/", views.dbgQuestionsList.as_view(), name="questions_list"),
     path("debug/questions/create", views.dbgQuestionsCreate.as_view()),
