@@ -2,7 +2,6 @@
 let params;
 let uuid = '';
 let nickname = '';
-
 /* UUID生成 */
 function createUuid(){
 
@@ -15,16 +14,17 @@ function createUuid(){
 
 
 /* URLのクエリパラメータからUUIDとニックネームの取得を試みる */
-try {
-    params = location.search;
-    uuid = params.get('uuid');
-    nickname = params.get('nickname');
-} catch(e) {
+params = new URLSearchParams(location.search);
+uuid = params.get('uuid');
+nickname = params.get('nickname');
+if (uuid === null) {
     uuid = createUuid();
 }
     
 /* フォームにニックネームを挿入 */
-document.getElementById("nickname").value = nickname;
+if (nickname !== null) {
+    document.getElementById("nickname").value = nickname;
+}
 
 /* sessionStorageにUUIDを保持 */
 window.sessionStorage.setItem("uuid", uuid);
@@ -34,5 +34,5 @@ let nameFormButton = document.getElementById("join-button");
 nameFormButton.addEventListener('click', function () {
     let nameForm = document.getElementById("nickname");
     window.sessionStorage.setItem("nickname", nameForm.value);
-    window.location.href = 'quiz_play';
+    windows.location.href = window.location.protocol + '://' + window.location.host + '/quiz_play';
 })

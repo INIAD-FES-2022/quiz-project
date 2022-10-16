@@ -28,7 +28,7 @@
 	<!--コンテンツ-->
 	<section class="relative">
 		<!--待機中-->
-		<div id="waiting" class="absolute w-screen h-full bg-color-gray bg-gray-100" style="visibility: hidden;">
+		<div id="waiting" class="absolute w-screen h-full bg-color-gray bg-gray-100" style="visibility: visible;">
 			<div class="leading-10 text-center">
 				<h2 class="text-5xl">INIAD-Q</h2>
 				<p class="text-3xl font-light">待機中..</p>
@@ -144,6 +144,6 @@
 		  <p>©2022 INIAD-FES実行委員会</p>
 		</footer>
 		<script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
-		<script src="{{ static 'js/quiz_play.js' }}"></script>
+		<script src="{% static 'js/quiz_play.js' %}"></script>
 	</body>
 </html>

@@ -1,7 +1,7 @@
 /* 変数定義 */
 const roomName = window.sessionStorage.getItem('uuid');
 
-cosnt quizSocket = new WebSocket(
+const quizSocket = new WebSocket(
     'ws://' + window.location.host + '/ws/quiz/' + roomName + '/'
 );
 
@@ -16,7 +16,7 @@ let messageParagraph = document.getElementById('message-paragraph');
 quizSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     const messageType = data.messageType;
-    const quizId; // 出題される問題のID、quizOpenを受信したときに代入
+    let quizId; // 出題される問題のID、quizOpenを受信したときに代入
     /* ページに待機中の画面が表示されている場合、回答画面に切り替える */
     document.getElementById('waiting').style.visibility = 'hidden';
     
@@ -51,7 +51,8 @@ quizSocket.onmessage = function(e) {
     } else if (messageType === 'announce') {
         /* メッセージ欄を書き換える */
         messageParagraph.innerText = data.textMessage;
-} else if (messageType === 'answerSentRequest') {
+
+    } else if (messageType === 'answerSentRequest') {
         /* 回答を取得 checkedValueは参加者の回答 choicesは選択肢すべてのelement*/
         let checkedValue;
         let choices = document.getElementsByName('answer');
@@ -67,8 +68,8 @@ quizSocket.onmessage = function(e) {
             'userId': window.sessionStorage.getItem('uuid'),
             'quizId': quizId,
             'choice': checkedValue,
-
         })
+        )
     } else if (messageType === 'scoringResult') {
         /* サーバから送られた正答 */
         let correctChoice = data.correctChoice;
@@ -91,8 +92,9 @@ quizSocket.onmessage = function(e) {
     } else if (messageType === 'userIdSentRequest') {
         /* ネームカードのIDを送信します */
         quizSocket.send(JSON.stringify({
-            'userId': window.sessionStorage.getItem('uuid');
+            'userId': window.sessionStorage.getItem('uuid')
         })
+        ) 
 
     } else if (messageType === 'rankDisplay') {
         /* 送られてきたスコアと順位に書き換えます */
@@ -112,6 +114,7 @@ quizSocket.onmessage = function(e) {
             rankingClose.style.visibility = 'visible';
             rankingClose.onclick = function () {
                 document.getElementById('ranking').style.visibility = 'hidden'; 
+            }
         }    
 
         /* ランキングを表示 */
