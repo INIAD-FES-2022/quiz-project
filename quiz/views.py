@@ -2,10 +2,8 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
-from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.base import TemplateView
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
