@@ -37,7 +37,7 @@
 		<!--正解-->
 		<div id="correct" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
 			<div class="flex justify-center items-center mt-20">
-				<img src="images/correct.svg" class="h-52">
+				<img src="{% static 'images/correct.svg' %}" class="h-52">
 			</div>
 			<div class="flex justify-center items-center mt-5">
 				<h2 class="text-4xl">正解！</h2>
@@ -52,7 +52,7 @@
 		<!--不正解-->
 		<div id="incorrect" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
 			<div class="flex justify-center items-center mt-20">
-				<img src="images/incorrect.svg" class="h-52">
+				<img src="{% static 'images/incorrect.svg' %}" class="h-52">
 			</div>
 			<div class="flex justify-center items-center mt-5">
 				<h2 class="text-4xl">不正解！</h2>
