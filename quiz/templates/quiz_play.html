@@ -65,7 +65,7 @@
 			</div>
 		</div>
 		<!--ランキング表示-->
-	  <div id="ranking" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: visible;">
+	  <div id="ranking" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
 		  <div>
 			  <h2 id="ranking-head" class="flex justify-center text-4xl">中間発表</h2>
 		  </div>
@@ -76,9 +76,9 @@
 			  	</div>
 			</div>
 			<div>
-				<p id="ranking-back-to-toppage" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100"><a href="https://quiz.iniadfes.com/">トップページに戻る</a></p>
+				<p id="ranking-back-to-toppage" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100" style="visibility: hidden"><a href="https://quiz.iniadfes.com/">トップページに戻る</a></p>
 				<div onClick="document.getElementById('ranking').style.visibility='hidden';">
-					<p id="ranking-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100" onClick="document.getElementById('ranking').style.visibility='hidden';">閉じる</p>
+					<p id="ranking-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100">閉じる</p>
 				</div>
 			</div>
 	  </div>
