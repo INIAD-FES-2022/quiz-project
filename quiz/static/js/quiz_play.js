@@ -145,3 +145,4 @@ quizSocket.onmessage = function(e) {
         console.error('quizSocket closed unexpectedly.');
     }
 }
+

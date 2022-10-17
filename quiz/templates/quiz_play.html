@@ -28,7 +28,7 @@
 	<!--コンテンツ-->
 	<section class="relative">
 		<!--待機中-->
-		<div id="waiting" class="absolute w-screen h-full bg-color-gray bg-gray-100" style="visibility: visible;">
+		<div id="waiting" class="absolute w-screen h-full bg-color-gray bg-gray-100" style="visibility: hidden;">
 			<div class="leading-10 text-center">
 				<h2 class="text-5xl">INIAD-Q</h2>
 				<p class="text-3xl font-light">待機中..</p>
@@ -45,6 +45,9 @@
 			<div class="flex justify-center items-center mt-5">
 				<p class="text-2xl">答えは<span id="correctMessage">A</span>です。</p>
 			</div>
+			<div onClick="document.getElementById('correct').style.visibility='hidden';">
+				<p id="correct-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100">閉じる</p>
+			</div>
 		</div>
 		<!--不正解-->
 		<div id="incorrect" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
@@ -57,9 +60,12 @@
 			<div class="flex justify-center items-center mt-5">
 				<p class="text-2xl">答えは<span id="incorrectMessage">A</span>です。</p>
 			</div>
+			<div onClick="document.getElementById('incorrect').style.visibility='hidden';">
+				<p id="incorrect-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100">閉じる</p>
+			</div>
 		</div>
 		<!--ランキング表示-->
-	  <div id="ranking" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: hidden;">
+	  <div id="ranking" class="absolute w-screen h-full bg-color-gray bg-gray-200 bg-opacity-75" style="visibility: visible;">
 		  <div>
 			  <h2 id="ranking-head" class="flex justify-center text-4xl">中間発表</h2>
 		  </div>
@@ -70,8 +76,10 @@
 			  	</div>
 			</div>
 			<div>
-				<p id="ranking-back-to-toppage" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100" style="visibility: hidden;"><a href="https://quiz.iniadfes.com/">トップページに戻る</a></p>
-				<p id="ranking-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100" style="visibility: hidden;">閉じる</p>
+				<p id="ranking-back-to-toppage" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100"><a href="https://quiz.iniadfes.com/">トップページに戻る</a></p>
+				<div onClick="document.getElementById('ranking').style.visibility='hidden';">
+					<p id="ranking-close" class="flex justify-center text-2xl m-5 p-3 border-2 border-gray-300 rounded bg-white hover:bg-gray-100" onClick="document.getElementById('ranking').style.visibility='hidden';">閉じる</p>
+				</div>
 			</div>
 	  </div>
 		<!--クイズ画面-->
