@@ -1,22 +1,35 @@
 /* 変数定義 */
 const roomName = window.sessionStorage.getItem('uuid');
+const nickname = window.sessionStorage.getItem('nickname');
 
 const quizSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/quiz/' + roomName + '/'
+    'ws://' + window.location.host + '/ws/quiz/?userid=' + roomName + '&nickname=' + nickname
 );
+
+let quizId; // 出題される問題のID、quizOpenを受信したときに代入
+let checkedValue; // 回答者が選択している選択肢
 
 let sentenceParagraph = document.getElementById('sentence-paragraph');
 let choiceA = document.getElementById('A');
 let choiceB = document.getElementById('B');
 let choiceC = document.getElementById('C');
 let choiceD = document.getElementById('D');
+let choiceALabel = document.getElementById('A-label');
+let choiceBLabel = document.getElementById('B-label');
+let choiceCLabel = document.getElementById('C-label');
+let choiceDLabel = document.getElementById('D-label');
 let messageParagraph = document.getElementById('message-paragraph');
 
 /* メッセージ到着時の動作*/
 quizSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
+    let datatmp;
+    if (JSON.parse(e.data).message === undefined) {
+        datatmp = JSON.parse(e.data);
+    } else {
+        datatmp = JSON.parse(e.data).message;
+    }
+    const data = datatmp;
     const messageType = data.messageType;
-    let quizId; // 出題される問題のID、quizOpenを受信したときに代入
     /* ページに待機中の画面が表示されている場合、回答画面に切り替える */
     document.getElementById('waiting').style.visibility = 'hidden';
     
@@ -28,10 +41,10 @@ quizSocket.onmessage = function(e) {
         /* HTML上に問題文を表示 */
         document.getElementById('sentence-paragraph').innerText = data.sentence
         /* 回答欄挿入 */
-        choiceA.innerText = data.choices[0];
-        choiceB.innerText = data.choices[1];
-        choiceC.innerText = data.choices[2];
-        choiceD.innerText = data.choices[3];
+        choiceALabel.textContent = data.choices[0];
+        choiceBLabel.textContent = data.choices[1];
+        choiceCLabel.textContent = data.choices[2];
+        choiceDLabel.textContent = data.choices[3];
 
         /* 回答欄をenable */
         choiceA.disabled = false;
@@ -54,7 +67,6 @@ quizSocket.onmessage = function(e) {
 
     } else if (messageType === 'answerSentRequest') {
         /* 回答を取得 checkedValueは参加者の回答 choicesは選択肢すべてのelement*/
-        let checkedValue;
         let choices = document.getElementsByName('answer');
         for (let i=0; i<4; i++) {
             if (choices.item(i).checked){
@@ -73,21 +85,25 @@ quizSocket.onmessage = function(e) {
     } else if (messageType === 'scoringResult') {
         /* サーバから送られた正答 */
         let correctChoice = data.correctChoice;
+        console.log(correctChoice);
+        console.log(checkedValue);
 
         /* ユーザの回答が正しかったかどうかで表示する画面を切り替える */
-        let isCorrect = data.correctChoice;
-        if (isCorrect) {
+        if (correctChoice === checkedValue) {
             /* 正解画面のメッセージを書き換え */
             document.getElementById('correctMessage').innerText = correctChoice;
             /* 正解画面を表示 */
-            document.getElementById('correct').style.visibility = 'hidden';
+            document.getElementById('correct').style.visibility = 'visible';
 
         } else {
             /* 不正解画面のメッセージを書き換え */
             document.getElementById('incorrectMessage').innerText = correctChoice;
             /* 不正解画面を表示 */
-            document.getElementById('incorrect').style.visibility = 'hidden';
+            document.getElementById('incorrect').style.visibility = 'visible';
         }
+
+        /* ユーザの回答を無回答に変更 */
+        checkedValue = "NOT_ANSWERED";
 
     } else if (messageType === 'userIdSentRequest') {
         /* ネームカードのIDを送信します */
@@ -100,8 +116,8 @@ quizSocket.onmessage = function(e) {
         /* 送られてきたスコアと順位に書き換えます */
         let score = data.score;
         let rank = data.rank;
-        document.getElementById('rank').innerText = String(score);
-        docuemnt.getElementById('score').innerText = String(rank);
+        document.getElementById('rank').innerText = String(rank);
+        document.getElementById('score').innerText = String(score);
         
         /* 最終発表の場合の表示 */
         if (data.isFin) {
@@ -113,7 +129,7 @@ quizSocket.onmessage = function(e) {
             let rankingClose = document.getElementById('ranking-close')
             rankingClose.style.visibility = 'visible';
             rankingClose.onclick = function () {
-                document.getElementById('ranking').style.visibility = 'hidden'; 
+                document.getElementById('ranking').style.visibility = 'visible'; 
             }
         }    
 

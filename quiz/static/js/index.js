@@ -34,5 +34,5 @@ let nameFormButton = document.getElementById("join-button");
 nameFormButton.addEventListener('click', function () {
     let nameForm = document.getElementById("nickname");
     window.sessionStorage.setItem("nickname", nameForm.value);
-    windows.location.href = window.location.protocol + '://' + window.location.host + '/quiz_play';
+    window.location.href = "quiz_play";
 })
