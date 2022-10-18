@@ -12,6 +12,9 @@ class UserData(models.Model):
 class QuizEvents(models.Model):
     name = models.CharField(max_length=50, verbose_name="名称")
 
+    def __str__(self):
+        return self.name
+
 # 開催回ごとのユーザのスコアを保持。
 class UserScores(models.Model):
     user = models.ForeignKey(UserData, on_delete=models.PROTECT, related_name="scores")
