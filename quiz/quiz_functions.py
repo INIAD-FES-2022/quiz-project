@@ -221,6 +221,7 @@ def sequence_save_user_answer(quiz_uuid, user_uuid, user_nickname, choice):
         usr_obj, _ = UserData.objects.get_or_create(id=user_uuid, defaults={"nickname": user_nickname})
         quiz_obj = Quizzes.objects.get(id=quiz_uuid)
         obj = UserAnswers(user=usr_obj, quiz=quiz_obj, choice=choice)
+        obj.full_clean()
         obj.save()
     except Exception as err:
         print("ERROR: ", *traceback.format_exception_only(type(err), err))
