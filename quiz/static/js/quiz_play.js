@@ -122,15 +122,13 @@ quizSocket.onmessage = function(e) {
         /* 最終発表の場合の表示 */
         if (data.isFin) {
             document.getElementById('ranking-back-to-toppage').style.visibility = 'visible';
+            document.getElementById('ranking-close').style.visibility = 'hidden';
             document.getElementById('ranking-head').innerText = '最終発表';
         } 
         /* 中間発表の場合 */
         else {
             let rankingClose = document.getElementById('ranking-close')
             rankingClose.style.visibility = 'visible';
-            rankingClose.onclick = function () {
-                document.getElementById('ranking').style.visibility = 'visible'; 
-            }
         }    
 
         /* ランキングを表示 */

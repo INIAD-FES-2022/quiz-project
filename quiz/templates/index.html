@@ -60,8 +60,9 @@
 			<div class="flex-initial justify-center w-auto overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
 				<select name="competition" class="">
 				<!--　開催回を選んで下のテーブルを書き換えたい-->
-					<option>第1回</option>
-					<option>第2回</option>
+					{% for competition in competitions %}
+					<option>{{ competition }}</option>
+					{% endfor %}
 				</select>
 				<table class="text-gray-800 w-full sm:w-auto">
 					<thead class="text-left border-b-2 border-orange-300">
@@ -72,7 +73,7 @@
 					<tbody>
 						{% for userScore in userScores %}
 						<tr>
-							<td class="px-4 py-3">{{ userScore.temp_rank }}</td><td class="px-4 py-3">{{ userScore.uuid }}</td><td class="px-4 py-3">{{ userScore.score }}</td>
+							<td class="px-4 py-3">{{ userScore.temp_rank }}</td><td class="px-4 py-3">{{ userScore.user.nickname }}</td><td class="px-4 py-3">{{ userScore.score }}</td>
 						</tr>
 						{% endfor %}
 					</tbody>

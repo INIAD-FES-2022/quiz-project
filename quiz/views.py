@@ -109,7 +109,8 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['userScores'] = UserScores.objects.filter(temp_rank__range=(1,10), event=QuizEvents.objects.latest('name'));
+        context['userScores'] = UserScores.objects.filter(temp_rank__range=(1,10))
+        context['competitions'] = QuizEvents.objects.all()
         return context
 
 
