@@ -58,12 +58,6 @@
 				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl text-center">RANKING</h2><br>
 			</div>
 			<div class="flex-initial justify-center w-auto overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
-				<select name="competition" class="">
-				<!--　開催回を選んで下のテーブルを書き換えたい-->
-					{% for competition in competitions %}
-					<option value="{{ forloop.counter0 }}">{{ competition.name }}</option>
-					{% endfor %}
-				</select>
 				<table class="text-gray-800 w-full sm:w-auto">
 					<thead class="text-left border-b-2 border-orange-300">
 						<tr>
@@ -71,12 +65,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for userScore in userScores %}
-						{% if userScore.event.pk == }
 						<tr>
-							<td class="px-4 py-3">{{ userScore.temp_rank }}</td><td class="px-4 py-3">{{ userScore.user.nickname }}</td><td class="px-4 py-3">{{ userScore.score }}</td>
+							<td class="px-4 py-3">準備中</td>
 						</tr>
-						{% endfor %}
 					</tbody>
 				</table>
 			</div>

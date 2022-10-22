@@ -3,10 +3,7 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.mixins import UserPassesTestMixin
-<<<<<<< HEAD:daphne/quiz/views.py
 from django.views.generic.base import TemplateView
-=======
->>>>>>> develop:quiz/views.py
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -106,7 +103,6 @@ class ControlQuizOperate(SuperuserRequiredMixin, ListView):
         print(context["questions"])
         return context
 
-<<<<<<< HEAD:daphne/quiz/views.py
 class IndexView(ListView):
     model = UserScores
     template_name = "index.html"
@@ -121,8 +117,6 @@ class IndexView(ListView):
 class QuizPlayView(TemplateView):
     template_name = "quiz_play.html"
 
-=======
->>>>>>> develop:quiz/views.py
 
 def debugTop(request):
     return HttpResponse("Debug Top!")
