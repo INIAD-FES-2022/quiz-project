@@ -8,11 +8,11 @@ COPY ./requirements.txt /usr/src/app
 RUN pip install -r requirements.txt
 
 COPY . /usr/src/app
-COPY . /usr/local/bin/entrypoint.sh
-RUN chmod /usr/local/bin/entrypoint.sh
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
 
-EXPOSE 8000
+EXPOSE 8080
 
 ENTRYPOINT ["entrypoint.sh"]
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["daphne", "-b", "0.0.0.0:8080", "config.asgi:application"]
