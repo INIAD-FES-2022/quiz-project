@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>クイズ管理サイト - ランキング</title>
+    </head>
+    <body>
+        <h1>クイズ管理サイト　ランキング</h1>
+        <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
+        <p>クイズの開催会を選んでください</p>
+        <!--テンプレート言語で一覧をうまく表示させてください-->
+        {% if object_list %}
+            <select name="" id="quiz_events" onchange="select_ranking(); return false;">
+                {% for object in object_list %}
+                    <option value="{{ forloop.counter0 }}">{{ object.name }}</option>
+                {% endfor %}
+            </select>
+            <div id="display_ranking">
+                {% for e_rank in event_ranking %}
+                    {% if forloop.counter0 == 0 %}
+                        {% for rank in e_rank %}
+                            <p>
+                                {{ rank.temp_rank }}位, 名前 {{ rank.user.pk }}, スコア {{ rank.score }}, 正答数 {{ rank.correctNums }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <h2>開催回がありません</h2>
+        {% endif %}
+    </body>
+</html>
+
+<script type="text/javascript">
+    // 外部のjsファイルではテンプレート言語が使用出来ないようです。
+    const d_rank = document.getElementById("display_ranking");
+    function select_ranking(){
+        let id = Number(document.getElementById("quiz_events").value);
+        while( d_rank.firstChild ){
+            d_rank.removeChild( d_rank.firstChild );
+        }
+        "{% for e_rank in event_ranking %}"
+            if("{{ forloop.counter0 }}" == id){
+                "{% for rank in e_rank %}"
+                    var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{ rank.user.pk }}" + ", スコア " + "{{ rank.score }}" + ", 正答数 " + "{{ rank.correctNums }}";
+                    var new_element = document.createElement('p');
+                    new_element.textContent = text;
+                    d_rank.appendChild(new_element);
+                "{% endfor %}"
+            };
+        "{% endfor %}"
+    }
+</script>

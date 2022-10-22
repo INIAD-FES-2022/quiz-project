@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>クイズ管理サイト - トップページ</title>
+    </head>
+    <body>
+        <h1>クイズ管理サイト トップページ</h1>
+        <p>必要な操作を選択してください。</p>
+        <p><a href="{% url 'control_quiz_events' %}">クイズ、開催会の設定</a></p>
+        <p><a href="{% url 'control_quiz_history' %}">ランキングの確認</a></p>
+        <p><a href="{% url 'control_quiz_operate' %}">クイズの出題などの操作</a></p>
+    </body>
+</html>
