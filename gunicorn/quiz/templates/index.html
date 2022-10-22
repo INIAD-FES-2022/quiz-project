@@ -61,7 +61,7 @@
 				<select name="competition" class="">
 				<!--　開催回を選んで下のテーブルを書き換えたい-->
 					{% for competition in competitions %}
-					<option>{{ competition }}</option>
+					<option value="{{ forloop.counter0 }}">{{ competition.name }}</option>
 					{% endfor %}
 				</select>
 				<table class="text-gray-800 w-full sm:w-auto">
@@ -72,6 +72,7 @@
 					</thead>
 					<tbody>
 						{% for userScore in userScores %}
+						{% if userScore.event.pk == }
 						<tr>
 							<td class="px-4 py-3">{{ userScore.temp_rank }}</td><td class="px-4 py-3">{{ userScore.user.nickname }}</td><td class="px-4 py-3">{{ userScore.score }}</td>
 						</tr>
