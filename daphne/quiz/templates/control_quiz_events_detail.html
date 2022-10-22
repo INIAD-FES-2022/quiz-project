@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>{{ quiz_event.name }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="8">出題履歴</th>
+            </tr>
+            <tr>
+                <th>クイズID</th>
+                <th>問題ID</th>
+                <th>問題文</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+                <th>正解</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td>{{ object.id }}</td>
+                <td>{{ object.question.id }}</td>
+                <td>{{ object.question.sentence }}</td>
+                <td>{{ object.question.choiceA }}</td>
+                <td>{{ object.question.choiceB }}</td>
+                <td>{{ object.question.choiceC }}</td>
+                <td>{{ object.question.choiceD }}</td>
+                <td>{{ object.question.correctChoice }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <ol>
+        
+    </ol>
+</body>
+</html>

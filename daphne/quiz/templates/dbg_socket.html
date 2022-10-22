@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="utf-8"/>
+    <title>test</title>
+</head>
+<body>
+    <div>
+        <textarea rows="50" cols="50" id="textform"></textarea>
+        <input type="button" onclick="socket(); return false;" value="test">
+    </div>
+    <p id="display">
+        未送信
+    </p>
+</body>
+
+<script type="text/javascript" src="{% static 'js/test.js' %}"></script>
+
+</html>
