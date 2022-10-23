@@ -3,7 +3,7 @@ const roomName = window.sessionStorage.getItem('uuid');
 const nickname = window.sessionStorage.getItem('nickname');
 
 const quizSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/quiz/?userid=' + roomName + '&nickname=' + nickname
+    'wss://' + window.location.host + '/ws/quiz/?userid=' + roomName + '&nickname=' + nickname
 );
 
 let quizId; // 出題される問題のID、quizOpenを受信したときに代入
