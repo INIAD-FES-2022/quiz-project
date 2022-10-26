@@ -11,8 +11,8 @@ COPY . /usr/src/app
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 
-EXPOSE 8080
+EXPOSE 8000
 
 ENTRYPOINT ["entrypoint.sh"]
 
-CMD ["daphne", "-b", "0.0.0.0:8080", "config.asgi:application"]
+CMD ["daphne", "-b", "0.0.0.0", "config.asgi:application"]
