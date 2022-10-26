@@ -35,11 +35,13 @@ function SendOperate(obj){
     // 問題を締め切る
     else if(opType == "非公開"){
         context["messageType"] = "quizClose";
+        context["quizId"] = document.getElementById("select_q").value;
         g_socket.send( JSON.stringify( context ) );
     }
     // 採点（回答の集計）
     else if(opType == "回収"){
         context["messageType"] = "answerSentRequest";
+        context["quizId"] = document.getElementById("select_q").value;
         g_socket.send( JSON.stringify( context ) );
     }
     else if (opType == "採点") {
