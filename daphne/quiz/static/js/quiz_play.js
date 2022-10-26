@@ -7,7 +7,7 @@ const quizSocket = new WebSocket(
 );
 
 let quizId; // 出題される問題のID、quizOpenを受信したときに代入
-let checkedValue; // 回答者が選択している選択肢
+let checkedValue = 'NOT_SELECTED'; // 回答者が選択している選択肢
 
 let sentenceParagraph = document.getElementById('sentence-paragraph');
 let choiceA = document.getElementById('A');
