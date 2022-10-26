@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+    daphne:
+        build: ./daphne
+        container_name: daphne
+        env_file:
+            - ".env"
+        volumes:
+            - ./daphne:${APP_ROOT}
+            - static:${STATIC_ROOT}
+            - media:${MEDIA_ROOT}
+        restart: always
+    nginx:
+        image: nginx
+        env_file:
+            - ".env"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/templates/default.conf.template
+            - static:${STATIC_ROOT}
+            - media:${MEDIA_ROOT}
+        links:
+            - daphne
+        ports:
+            - 80:80
+        restart: always
+
+volumes:
+    static:
+        driver: local
+    media:
+        driver: local

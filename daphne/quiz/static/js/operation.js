@@ -1,5 +1,5 @@
 // WebSocketオブジェクト
-const g_socket = new WebSocket( "ws://" + window.location.host + "/ws/quiz/" );
+const g_socket = new WebSocket( "wss://" + window.location.host + "/ws/quiz/" );
 
 // WebSocketに命令を送信する処理
 function SendOperate(obj){
@@ -71,4 +71,8 @@ g_socket.onmessage = ( event ) =>
     // テキストデータをJSONデータにデコード
     let data = JSON.parse( event.data );
     console.log(data);
+<<<<<<< HEAD:quiz/static/js/operation.js
 }
+=======
+}
+>>>>>>> docker:daphne/quiz/static/js/operation.js

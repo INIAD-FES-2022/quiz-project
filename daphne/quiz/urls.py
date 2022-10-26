@@ -2,12 +2,14 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path("", views.ControlQuizTop.as_view(), name="control_quiz_top"),
-    path("control/", views.ControlQuizEvents.as_view(), name="control_quiz_events"),
-    path("control/<int:pk>", views.ControlQuizEventsDetail.as_view(), name="control_quiz_events_detail"),
+    path("control/", views.ControlQuizTop.as_view(), name="control_quiz_top"),
+    path("control/events", views.ControlQuizEvents.as_view(), name="control_quiz_events"),
+    path("control/events/<int:pk>", views.ControlQuizEventsDetail.as_view(), name="control_quiz_events_detail"),
     path("control/<int:pk>/add_quiz", views.ControlQuizEventsAddQuiz.as_view(), name="control_quiz_events_add_quiz"),
     path("control/history", views.ControlQuizHistory.as_view(), name="control_quiz_history"),
     path("control/operate", views.ControlQuizOperate.as_view(), name="control_quiz_operate"),
+    path("", views.IndexView.as_view(), name="index"),
+    path("quiz_play", views.QuizPlayView.as_view(), name="join"),
     path("debug/", views.debugTop),
     path("debug/questions/", views.dbgQuestionsList.as_view(), name="questions_list"),
     path("debug/questions/create", views.dbgQuestionsCreate.as_view()),
