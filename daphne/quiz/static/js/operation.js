@@ -73,8 +73,4 @@ g_socket.onmessage = ( event ) =>
     // テキストデータをJSONデータにデコード
     let data = JSON.parse( event.data );
     console.log(data);
-<<<<<<< HEAD:quiz/static/js/operation.js
 }
-=======
-}
->>>>>>> docker:daphne/quiz/static/js/operation.js
