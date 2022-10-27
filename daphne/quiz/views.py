@@ -104,13 +104,17 @@ class ControlQuizOperate(SuperuserRequiredMixin, ListView):
         return context
 
 class IndexView(ListView):
-    model = UserScores
+    model = QuizEvents
+    fields = ["id", "name"]
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['userScores'] = UserScores.objects.filter(temp_rank__range=(1,10))
-        context['competitions'] = QuizEvents.objects.all()
+        lst=[]
+        for obj in context["object_list"]:
+            lst.append(qfc.get_users_score(obj.id).order_by("temp_rank"))
+        context["event_ranking"] = lst
+        print(context)
         return context
 
 
