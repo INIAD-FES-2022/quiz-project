@@ -167,9 +167,17 @@ def all_user_send_message(message):
 def sequence_scoring(quiz_uuid, points):
     try:
         quiz = Quizzes.objects.get(id=quiz_uuid)
+
+        if quiz.status != "COLLECTING":  # 状態が「解答受付中」でなければ、エラー。
+            print("ERROR: 解答が集められていないため、採点できません。status = {}".format(quiz.status))
+            return -1
+
         scored_users = get_scored_users(quiz_uuid)
         
         users_add_score(quiz.event.id, scored_users.get("correct"), points, True)
+
+        quiz.status = "SCORED"  # 状態を「採点済み」に切り替え。
+        quiz.save()
 
         message = {
             "messageType": "scoringResult",
@@ -221,7 +229,90 @@ def sequence_save_user_answer(quiz_uuid, user_uuid, user_nickname, choice):
         usr_obj, _ = UserData.objects.get_or_create(id=user_uuid, defaults={"nickname": user_nickname})
         quiz_obj = Quizzes.objects.get(id=quiz_uuid)
         obj = UserAnswers(user=usr_obj, quiz=quiz_obj, choice=choice)
+        obj.full_clean()
         obj.save()
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0
+
+def sequence_quiz_open(quiz_uuid):
+    try:
+        quiz = Quizzes.objects.get(pk=quiz_uuid)
+
+        if quiz.status != "READY":  # 状態が「出題前」でなければ、エラー。
+            print("ERROR: このクイズは、「出題前」の状態ではありません。status = {}".format(quiz.status))
+            return -1
+        
+        event = quiz.event
+        if event.currently_quiz is not None:
+            if event.currently_quiz.status != "SCORED":  # イベントで進行している問題が採点済みでなければ、エラー。
+                print("ERROR: 他の問題が出題中です。(id = {}, sentence = {})".format(event.currently_quiz.id, event.currently_quiz.question.sentence))
+                return -1
+        
+        quiz.status = "OPENED"  # 状態を「出題中」に切り替え。
+        quiz.save()
+        event.currently_quiz = quiz  # 進行している問題を切り替え。
+        event.save()
+
+        message = {
+            "messageType": "quizOpen",
+            "quizId": str(quiz.id),
+            "sentence": quiz.question.sentence,
+            "choices": [quiz.question.choiceA, quiz.question.choiceB, quiz.question.choiceC, quiz.question.choiceD],
+        }
+
+        all_user_send_message(message)
+
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0
+
+def sequence_quiz_close(quiz_uuid):
+    try:
+        print(quiz_uuid)
+        quiz = Quizzes.objects.get(pk=quiz_uuid)
+
+        if quiz.status != "OPENED":  # 状態が「出題中」でなければ、エラー。
+            print("ERROR: この問題は、状態が「出題中」ではありません。status = {}".format(quiz.status))
+            return -1
+        
+        quiz.status = "CLOSED"  # 状態を「選択締め切り」に切り替え。
+        quiz.save()
+
+        message = {
+            "messageType": "quizClose"
+        }
+
+        all_user_send_message(message)
+
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+
+    return 0
+
+
+def sequence_answer_sent_request(quiz_uuid):
+    try:
+        quiz = Quizzes.objects.get(pk=quiz_uuid)
+
+        if quiz.status != "CLOSED" and quiz.status != "COLLECTING":  # 状態が「選択締め切り」or「解答受付中」でなければ、エラー。
+            print("ERROR: この問題は、解答を集められる状態ではありません。 status = {}".format(quiz.status))
+            return -1
+        
+        quiz.status = "COLLECTING"  # 状態を「解答受付中」に切り替え。
+        quiz.save()
+
+        message = {
+            "messageType": "answerSentRequest"
+        }
+
+        all_user_send_message(message)
+
     except Exception as err:
         print("ERROR: ", *traceback.format_exception_only(type(err), err))
         return -1
