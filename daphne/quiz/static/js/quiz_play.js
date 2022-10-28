@@ -105,6 +105,9 @@ quizSocket.onmessage = function(e) {
         /* ユーザの回答を無回答に変更 */
         checkedValue = "NOT_ANSWERED";
 
+        /* アナウンス用テキストをリセット */
+        messageParagraph.innerText = "回答が採点されました！";
+
     } else if (messageType === 'userIdSentRequest') {
         /* ネームカードのIDを送信します */
         quizSocket.send(JSON.stringify({
