@@ -71,17 +71,17 @@
 						</tr>
 					</thead>
 					<tbody>
+                                            <div id="display_ranking">
 						{% for e_rank in event_ranking %}
 							{% if forloop.counter0 == 0 %}
 								{% for rank in e_rank %}
-								<tr>
-									<td class="px-4 py-3">{{ rank.temp_rank }}</td>
-									<td class="px-4 py-3">{{ rank.user.nickname }}</td>
-									<td class="px-4 py-3">{{ rank.score }}</td>
-								</tr>
+                                                <p>
+                                                    {{ rank.temp_rank }}位, 名前 {{ rank.user.nickname }}, スコア {{ rank.score }}
+                                                </p>
 								{% endfor %}
 							{% endif %}
 						{% endfor %}
+                                            </div>
 					{% else %}
 						<tr>
 							<td class="px-4 py-3">準備中...</td>
@@ -106,7 +106,7 @@
 			<p>©2022 INIAD-FES実行委員会</p>
 		</footer>
     </body>
-	<script src="{% static 'js/index.js' %}"></script>
+	<script type="application/javascript" src="{% static 'js/index.js' %}"></script>
 	<script type="text/javascript">
     const d_rank = document.getElementById("display_ranking");
     function select_ranking(){
