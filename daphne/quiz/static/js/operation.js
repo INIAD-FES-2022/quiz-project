@@ -67,6 +67,9 @@ function SendOperate(obj){
         context["eventId"] = Number(document.getElementById("select_c").value)+1;
         context["isFin"] = true;
         g_socket.send( JSON.stringify( context ) );
+    } else if (opType == "強制リセット") {
+        context["messageType"] = "SequentialStateReset";
+        g_socket.send( JSON.stringify( context ) );
     }
     else{
         console.log("無効なアクセスです。");

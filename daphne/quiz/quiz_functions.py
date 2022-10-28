@@ -361,7 +361,23 @@ def event_joined_middle(target_user_uuid):
                     "choices": [currently_quiz_obj.choiceA, currently_quiz_obj.choiceB, currently_quiz_obj.choiceC, currently_quiz_obj.choiceD]
                 }
                 user_send_message(target_user_uuid, message)
+        
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0
 
+def sequence_sequential_state_reset():
+    try:
+        for event in QuizEvents.objects.all():
+            event.currently_quiz = None
+            event.save()
+        
+        for quiz in Quizzes.objects.all():
+            quiz.status = "READY"
+            quiz.save()
+        
     except Exception as err:
         print("ERROR: ", *traceback.format_exception_only(type(err), err))
         return -1
