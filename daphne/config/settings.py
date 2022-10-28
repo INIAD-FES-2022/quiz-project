@@ -31,7 +31,7 @@ DEBUG = True if os.environ.get('DJANGO_DEBUG') == 'TRUE' else False
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(',') if (os.environ.get('CSRF_TRUSTED_ORIGINS')) else ['http://localhost','http://127.0.0.1']
 
 SECURE_PROXY_SSEL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -83,17 +83,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'PORT': int(os.environ.get('DATABASE_PORT')),
-    } if int(os.environ.get('IS_POSTGRESQL')) else { 
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': (BASE_DIR / 'db.sqlite3'),
-    }
+    'default': 
+            {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('DATABASE_NAME'),
+                'USER': os.environ.get('DATABASE_USER'),
+                'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+                'HOST': os.environ.get('DATABASE_HOST'),
+                'PORT': int(os.environ.get('DATABASE_PORT')),
+            }
+            if (os.environ.get('IS_POSTGRES') == 'True') else
+            {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': (BASE_DIR / 'db.sqlite3'),
+            }
 }
 
 
@@ -154,6 +157,6 @@ ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': { 'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], },
+        'CONFIG': { 'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], } if (os.environ.get('REDIS_HOST')) else { 'hosts': [("127.0.0.1", 6379)], }
     },
 }
