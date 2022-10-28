@@ -8,6 +8,12 @@ function SendOperate(obj){
         // 待機中切り替え
     if(opType == "スタート"){
         context["messageType"] = "roomActivate";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
+        g_socket.send( JSON.stringify( context ) );
+    }
+    else if (opType == "イベント終了") {
+        context["messageType"] = "roomInactive";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
         g_socket.send( JSON.stringify( context ) );
     }
     // 問題の公開

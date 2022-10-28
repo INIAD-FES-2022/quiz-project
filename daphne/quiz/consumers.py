@@ -45,6 +45,8 @@ class QuizConsumer( AsyncWebsocketConsumer ):
                     self.channel_name
                 )
                 await self.accept()
+
+                await database_sync_to_async(event_joined_middle)(self.uuid_str)
                 
             except Exception as err:
                 print("ERROR: ", *traceback.format_exception_only(type(err), err))
@@ -82,7 +84,15 @@ class QuizConsumer( AsyncWebsocketConsumer ):
                 quiz_uuid = text_data_json.get("quizId")
                 err = await database_sync_to_async(sequence_scoring)(quiz_uuid, 10)
                 await self.send(text_data=json.dumps( {"RequestSuccessed": err >= 0} ))
-            else:  # roomActive, quizOpen, announce, quizClose, answerSentRequest
+            elif (text_data_json.get("messageType") == "roomActive"):  # イベント開始
+                event_id = text_data_json.get("eventId")
+                err = await database_sync_to_async(sequence_room_active)(event_id)
+                await self.send(text_data=json.dumps( {"RequestSuccessed": err >= 0} ))
+            elif (text_data_json.get("messageType") == "roomInactive"):  # イベント終了
+                event_id  = text_data_json.get("eventId")
+                err = await database_sync_to_async(sequence_room_inactive)(event_id)
+                await self.send(text_data=json.dumps( {"RequestSuccessed": err >= 0} ))
+            else:  # quizOpen, announce, quizClose, answerSentRequest
                 # 受信処理関数の追加
                 text_data_json["type"]="spread_send"
                 await self.channel_layer.group_send( self.room_group_name, text_data_json )
@@ -91,8 +101,8 @@ class QuizConsumer( AsyncWebsocketConsumer ):
         else:
             if(text_data_json.get("messageType") == "answerSent"):
                 # 回答の保存
-                quiz_uuid = text_data_json["quizId"]
-                choice = text_data_json["choice"]
+                quiz_uuid = text_data_json.get("quizId")
+                choice = text_data_json.get("choice")
 
                 user_uuid = self.uuid_str
                 user_nickname = self.nickname

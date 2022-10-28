@@ -227,3 +227,52 @@ def sequence_save_user_answer(quiz_uuid, user_uuid, user_nickname, choice):
         return -1
     
     return 0
+
+def sequence_room_active(event_id):
+    try:
+        if QuizEvents.objects.filter(is_active=True).exists():
+            print("既に開催されているイベントがあります。")
+            return -1
+
+        event_obj = QuizEvents.objects.get(id=event_id)
+        event_obj.is_active = True
+        event_obj.save()
+
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0
+
+
+def sequence_room_inactive(event_id):
+    try:
+        event_obj = QuizEvents.objects.get(id=event_id)
+        event_obj.is_active = False
+        event_obj.save()
+
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0
+
+def event_joined_middle(target_user_uuid):
+    try:
+        actived_events = QuizEvents.objects.filter(is_active=True)
+        if actived_events.exists():
+            currently_quiz_obj = actived_events[0].currently_quiz
+            if currently_quiz_obj is not None and currently_quiz_obj.status == "OPENED":
+                message = {
+                    "messageType": "quizOpen",
+                    "quizId": str(currently_quiz_obj.id),
+                    "sentence": currently_quiz_obj.sentence,
+                    "choices": [currently_quiz_obj.choiceA, currently_quiz_obj.choiceB, currently_quiz_obj.choiceC, currently_quiz_obj.choiceD]
+                }
+                user_send_message(target_user_uuid, message)
+
+    except Exception as err:
+        print("ERROR: ", *traceback.format_exception_only(type(err), err))
+        return -1
+    
+    return 0

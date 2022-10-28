@@ -12,6 +12,7 @@ class UserData(models.Model):
 class QuizEvents(models.Model):
     name = models.CharField(max_length=50, verbose_name="名称")
     currently_quiz = models.ForeignKey("Quizzes", null=True, blank=True, on_delete=models.PROTECT, related_name="+")
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
