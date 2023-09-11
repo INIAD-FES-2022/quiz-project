@@ -27,11 +27,11 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('DJANGO_DEBUG') == 'TRUE' else False
+DEBUG = True if os.environ.get('DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(',') if (os.environ.get('CSRF_TRUSTED_ORIGINS')) else ['http://localhost','http://127.0.0.1']
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(',')
 
 SECURE_PROXY_SSEL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -137,15 +137,16 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT') if os.environ.get('STATIC_ROOT') else (BASE_DIR / 'staticfiles')
 
+USE_S3 = True if os.environ.get('USE_S3') == 'True' else False
 AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' if os.environ.get('AWS_ACCESS_KEY_ID') else 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' if USE_S3 is True else 'django.core.files.storage.FileSystemStorage'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
-MEDIA_URL = S3_URL if os.environ.get('AWS_ACCESS_KEY_ID') else 'files/'
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if os.environ.get('MEDIA_ROOT') else (BASE_DIR / 'media')
+MEDIA_URL = S3_URL if USE_S3 is True else 'files/'
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if USE_S3 is True else (BASE_DIR / 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -157,6 +158,8 @@ ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': { 'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], } if (os.environ.get('REDIS_HOST')) else { 'hosts': [("127.0.0.1", 6379)], }
+        'CONFIG': {
+            'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], 
+        }
     },
 }

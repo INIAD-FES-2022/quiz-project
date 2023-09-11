@@ -19,7 +19,7 @@ DEBUG=False
 
 DJANGO_SECRET_KEY=SECRETKEY(replace here)
 CSRF_TRUSTED_ORIGINS=https://your-website-origin, # Don't forget comma
-ALLOWED_HOSTS=your-website-origin, # Don't forget comma
+ALLOWED_HOSTS=your-website-origin, # Don't forget comma 
 
 POSTGRES_NAME=postgres
 POSTGRES_USER=postgres
@@ -28,7 +28,7 @@ POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
 # If you use S3 to store static files and want to read them from S3, enter values below
-AWS=True
+USE_S3=True
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_STORAGE_BUCKET_NAME=
