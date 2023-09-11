@@ -27,9 +27,9 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ.get('DJANGO_DEBUG') == 'TRUE' else False
+DEBUG = True if os.environ.get('DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS').split(',')
 
@@ -83,17 +83,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'PORT': int(os.environ.get('DATABASE_PORT')),
-    } if int(os.environ.get('IS_POSTGRESQL')) else { 
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': (BASE_DIR / 'db.sqlite3'),
-    }
+    'default': 
+            {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('POSTGRES_NAME'),
+                'USER': os.environ.get('POSTGRES_USER'),
+                'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+                'HOST': os.environ.get('POSTGRES_HOST'),
+                'PORT': int(os.environ.get('POSTGRES_PORT')),
+            }
+            if (os.environ.get('IS_POSTGRES') == 'True') else
+            {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': (BASE_DIR / 'db.sqlite3'),
+            }
 }
 
 
@@ -134,15 +137,16 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT') if os.environ.get('STATIC_ROOT') else (BASE_DIR / 'staticfiles')
 
+USE_S3 = True if os.environ.get('USE_S3') == 'True' else False
 AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' if os.environ.get('AWS_ACCESS_KEY_ID') else 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' if USE_S3 is True else 'django.core.files.storage.FileSystemStorage'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
-MEDIA_URL = S3_URL if os.environ.get('AWS_ACCESS_KEY_ID') else 'files/'
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if os.environ.get('MEDIA_ROOT') else (BASE_DIR / 'media')
+MEDIA_URL = S3_URL if USE_S3 is True else 'files/'
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if USE_S3 is True else (BASE_DIR / 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -154,6 +158,8 @@ ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': { 'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], },
+        'CONFIG': {
+            'hosts': [(os.environ.get('REDIS_HOST'), os.environ.get('REDIS_PORT'))], 
+        }
     },
 }

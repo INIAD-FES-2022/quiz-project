@@ -20,7 +20,7 @@
                     {% if forloop.counter0 == 0 %}
                         {% for rank in e_rank %}
                             <p>
-                                {{ rank.temp_rank }}位, 名前 {{ rank.user.pk }}, スコア {{ rank.score }}, 正答数 {{ rank.correctNums }}
+                                {{ rank.temp_rank }}位, 名前 {{ rank.user.nickname }}, スコア {{ rank.score }}, 正答数 {{ rank.correctNums }}
                             </p>
                         {% endfor %}
                     {% endif %}
@@ -43,7 +43,7 @@
         "{% for e_rank in event_ranking %}"
             if("{{ forloop.counter0 }}" == id){
                 "{% for rank in e_rank %}"
-                    var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{ rank.user.pk }}" + ", スコア " + "{{ rank.score }}" + ", 正答数 " + "{{ rank.correctNums }}";
+                    var text = "{{ rank.temp_rank }}" + "位, 名前 " + "{{ rank.user.nickname }}" + ", スコア " + "{{ rank.score }}" + ", 正答数 " + "{{ rank.correctNums }}";
                     var new_element = document.createElement('p');
                     new_element.textContent = text;
                     d_rank.appendChild(new_element);

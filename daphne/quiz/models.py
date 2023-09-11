@@ -11,6 +11,11 @@ class UserData(models.Model):
 # 開催回を保持。
 class QuizEvents(models.Model):
     name = models.CharField(max_length=50, verbose_name="名称")
+    currently_quiz = models.ForeignKey("Quizzes", null=True, blank=True, on_delete=models.PROTECT, related_name="+")
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 # 開催回ごとのユーザのスコアを保持。
 class UserScores(models.Model):
@@ -48,11 +53,22 @@ class Questions(models.Model):
 
 # 出題したクイズの履歴を保持する。
 class Quizzes(models.Model):
+    # 「READY -> OPENED -> CLOSED -> COLLECTING -> SCORED」の順番でのみ遷移可能。
+    # COLLECTINGのみ「COLLECTING -> COLLECTING」に遷移可能。(ユーザから複数回解答を集められるようにするため。ただ、解答の重複はしない。)
+    STATUS_CHOICES = [
+        ("READY", "出題前"),
+        ("OPENED", "出題中"),
+        ("CLOSED", "選択締め切り"),  # ユーザ画面は非アクティブになった状態。
+        ("COLLECTING", "解答受付中"),  # 1回以上解答を集めた状態。
+        ("SCORED", "採点済み"),  # これ以降の操作が行えなくなる状態。
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.ForeignKey(Questions, on_delete=models.PROTECT, related_name="+")
     event = models.ForeignKey(QuizEvents, on_delete=models.PROTECT, related_name="quizzes")
     startTime = models.DateTimeField(auto_now_add=True, verbose_name="解答開始時刻")
     endTime = models.DateTimeField(null=True, verbose_name="解答終了時刻")
+    status = models.CharField(max_length=20, default="READY", choices=STATUS_CHOICES, verbose_name="状態")
 
 
 # ユーザの解答を保持。

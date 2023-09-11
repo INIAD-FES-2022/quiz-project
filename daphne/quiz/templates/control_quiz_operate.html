@@ -21,6 +21,7 @@
             {% endif %}
             <!--待機中切り替え-->
             <input type="button" value="スタート" onclick="SendOperate(this); return false;">
+            <input type="button" value="イベント終了" onclick="SendOperate(this); return false;">
         <h2>出題する問題を選択してください。</h2>
             <!--開催会と問題を選択する形？-->
             <select name="question" id="select_q"></select>
@@ -38,13 +39,13 @@
             <input type="button" value="最終発表" onclick="SendOperate(this); return false;">
         <h2>クイズ終了ボタン</h2>
             <input type="button" value="終了" onclick="SendOperate(this); return false;">
-
-<<<<<<< HEAD
         <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
-=======
-        
->>>>>>> develop
 
+        <h2>(緊急時用)強制リセット(解答は保持される)</h2>
+            <input type="button" value="強制リセット" onclick="SendOperate(this); return false;">
+
+        <p><a href="{% url 'control_quiz_top' %}">トップページへ</a></p>
+        
         <script type="text/javascript">
             // 外部のjsファイルではテンプレート言語が使用出来ないようです。
             const select_qs = document.getElementById("select_q");

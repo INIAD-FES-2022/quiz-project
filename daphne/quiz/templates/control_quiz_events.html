@@ -19,7 +19,9 @@
             {% for object in object_list %}
             <tr>
                 <td>{{ object.name }}</td>
-                <td><a href="{% url 'control_quiz_events_detail' object.id %}">操作画面へ</a></td>
+                <td><a href="{% url 'control_quiz_events_detail' object.id %}">詳細へ</a></td>
+                <!--間隔が狭すぎるので空白を挿入しています--><td></td>
+                <td><a href="{% url 'control_quiz_events_add_quiz' object.id %}">操作画面へ</a></td>
             </tr>
             {% endfor %}
         </tbody>

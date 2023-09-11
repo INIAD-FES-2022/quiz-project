@@ -9,5 +9,10 @@ class QuestionsAdmin(admin.ModelAdmin):
 class QuizEventsAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
+class QuizzesAdmin(admin.ModelAdmin):
+    list_display = ("question", "event")
+    fields = ("question", "event")
+
 admin.site.register(QuizEvents, QuizEventsAdmin)
 admin.site.register(Questions, QuestionsAdmin)
+admin.site.register(Quizzes, QuizzesAdmin)
