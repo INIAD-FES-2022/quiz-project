@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'quiz',
     'channels',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
