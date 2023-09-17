@@ -1,14 +1,17 @@
-from django.shortcuts import render
+import csv
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.decorators import user_passes_test
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic import TemplateView
 from quiz.models import Questions, QuizEvents, UserAnswers, Quizzes, UserScores
+from quiz.forms import CSVUploadForm
 from django import forms
 
 import quiz.quiz_functions as qfc
@@ -173,3 +176,33 @@ class dbgUserAnswersCreate(CreateView):
 
 class dbgSocket(TemplateView):
     template_name = "dbg_socket.html"
+
+
+def is_superuser(user):
+    return user.is_superuser
+
+
+@user_passes_test(is_superuser)
+def import_data(request):
+    if request.method == 'POST':
+        form = CSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+            csv_data = csv_file.read().decode('utf-8')
+            reader = csv.DictReader(csv_data.splitlines())
+            for row in reader:
+                Questions.objects.create(
+                    sentence=row['sentence'],
+                    choiceA=row['choiceA'],
+                    choiceB=row['choiceB'],
+                    choiceC=row['choiceC'],
+                    choiceD=row['choiceD'],
+                    correctChoice=row['correctChoice'],
+                )
+            return redirect('admin:index')
+        else:
+            form = CSVUploadForm()
+            return render(request, 'import_data.html', {'form': form, 'message': 'フォームが無効です'})
+    else:
+        form = CSVUploadForm()
+    return render(request, 'import_data.html', {'form': form})
