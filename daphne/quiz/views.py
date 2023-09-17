@@ -178,31 +178,3 @@ class dbgSocket(TemplateView):
     template_name = "dbg_socket.html"
 
 
-def is_superuser(user):
-    return user.is_superuser
-
-
-@user_passes_test(is_superuser)
-def import_data(request):
-    if request.method == 'POST':
-        form = CSVUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            csv_file = form.cleaned_data['csv_file']
-            csv_data = csv_file.read().decode('utf-8')
-            reader = csv.DictReader(csv_data.splitlines())
-            for row in reader:
-                Questions.objects.create(
-                    sentence=row['sentence'],
-                    choiceA=row['choiceA'],
-                    choiceB=row['choiceB'],
-                    choiceC=row['choiceC'],
-                    choiceD=row['choiceD'],
-                    correctChoice=row['correctChoice'],
-                )
-            return redirect('admin:index')
-        else:
-            form = CSVUploadForm()
-            return render(request, 'import_data.html', {'form': form, 'message': 'フォームが無効です'})
-    else:
-        form = CSVUploadForm()
-    return render(request, 'import_data.html', {'form': form})

@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<title>問題登録フォーム(CSV)</title>
-		<meta charset="UTF-8">
-	</head>
-	<body>
+{% extends "admin/base.html" %}
+
+{% block content %}
 		<h1>問題登録フォーム(CSV)</h1>
 		<p>下記のフォームにCSVファイルをアップロードして問題を一括で登録することができます</p>
 		{% if message %}
@@ -16,5 +12,4 @@
     			<button type="submit">インポート</button>
 		</form>
 		<p><a href="admin">管理者画面へ</a></p>
-	</body>
-</html>
+{% endblock %}

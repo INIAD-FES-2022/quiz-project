@@ -19,5 +19,4 @@ urlpatterns = [
 #    path("debug/quizzes/create", views.dbgQuizzesCreate.as_view()),
 #    path("debug/quizzes/<uuid:quizUuid>/open", views.dbgQuizOpen),
 #    path("debug/socket/", views.dbgSocket.as_view()),
-    path('import/', views.import_data, name='import_data'),
 ]
