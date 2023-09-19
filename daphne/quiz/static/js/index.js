@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		    throw new Error('Failed to get quiz events.');
 		}
 
-		    return response.json();
+		return response.json();
 	    })
 	    .then(data => {
 		let child;
@@ -73,4 +73,52 @@ document.addEventListener("DOMContentLoaded", function() {
 		    selectMenu.append(child);
 		}
 	    })
+});
+
+/* プルダウンメニューの値に合わせてランキング表を書き換える */
+document.addEventListener("DOMContentLoaded", function() {
+    const selectMenu = document.getElementById("selectMenu");
+    const rankingTable = document.getElementById("rankingTable");
+    const rankingTableBody = document.getElementById("rankingTableBody");
+
+    selectMenu.addEventListener("change", function() {
+	const selectValue = selectMenu.value;
+	rankingTableBody.innerHTML = '';
+
+	fetch(apiUrl+'ranking/?eventid='+selectValue)
+	    .then(response => {
+                if (!response.ok) {
+		    throw new Error('Failed to get ranking.');
+		}
+		return response.json();
+	    })
+	    .then(data => {
+		let tableRow;
+		let tableRankCell;
+		let tableNameCell;
+		let tableScoreCell;
+		let i=0;
+		let max=50;
+		if (data.length === 0) {
+			let errorMsg = document.createElement("p");
+			errorMsg.textContent = "まだ開催されていません。";
+			rankingTableBody.append(errorMsg);
+		} else if (data.length < max) {
+	            max=data.length 
+		    for (i=0; i<30; i++) {
+			    tableRow = document.createElement("tr");
+			    tableRankCell = document.createElement("td");
+			    tableRankCell.textContent = data[i].temp_rank;
+			    tableNameCell = document.createElement("td");
+			    tableNameCell.textContent = data[i].nickname;
+			    tableScoreCell = document.createElement("td");
+			    tableScoreCell.textContent = data[i].score;
+			    tableRow.append(tableRankCell);
+			    tableRow.append(tableNameCell);
+			    tableRow.append(tableScoreCell);
+			    rankingTableBody.append(tableRow);
+		    }
+		}
+	    });
+    });
 });
