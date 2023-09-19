@@ -16,12 +16,12 @@ class RankingList(generics.ListAPIView):
         eventid = params.get('eventid', None)
         if userid is not None:
             try:
-                queryset = queryset.filter(user_id__exact=userid)
+                queryset = queryset.filter(user=userid)
             except ValidationError:
                 pass
         if eventid is not None:
             try:
-                queryset = queryset.filter(event_id__exact=eventid)
+                queryset = queryset.filter(event=eventid)
             except:
                 pass
         return queryset
