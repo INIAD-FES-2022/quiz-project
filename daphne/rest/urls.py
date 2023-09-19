@@ -4,7 +4,7 @@ from rest.views import RankingViewSet
 
 
 router = DefaultRouter()
-router.register('ranking', RankingViewSet)
+router.register('ranking', RankingViewSet, 'ranking')
 
 urlpatterns = [
     path('', include(router.urls)),

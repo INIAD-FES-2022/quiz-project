@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework import viewsets
 from quiz.models import UserScores
@@ -5,7 +6,22 @@ from rest.serializers import RankingSerializer
 
 
 class RankingViewSet(viewsets.ModelViewSet):
-    queryset = UserScores.objects.all()
     serializer_class = RankingSerializer
 
-# Create your views here.
+    def get_queryset(self):
+        queryset = UserScores.objects.all()
+        params = self.request.query_params
+
+        userid = params.get('userid', None)
+        eventid = params.get('eventid', None)
+        if userid is not None:
+            try:
+                queryset = queryset.filter(user_id__exact=userid)
+            except ValidationError:
+                pass
+        if eventid is not None:
+            try:
+                queryset = queryset.filter(event_id__exact=eventid)
+            except:
+                pass
+        return queryset
