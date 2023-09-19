@@ -2,6 +2,7 @@
 let params;
 let uuid = '';
 let nickname = '';
+const apiUrl = 'https://' + window.location.host + '/api/';
 /* UUID生成 */
 function createUuid(){
 
@@ -48,3 +49,28 @@ nameFormButton.addEventListener('click', function () {
     	window.location.href = "quiz_play";
     }
 })
+
+
+/* プルダウンメニューの値を取得し代入する */
+document.addEventListener("DOMContentLoaded", function() {
+    const selectMenu = document.getElementById("selectMenu");
+
+    fetch(apiUrl+'events/')
+	    .then(response => {
+                if (!response.ok) {
+		    throw new Error('Failed to get quiz events.');
+		}
+
+		    return response.json();
+	    })
+	    .then(data => {
+		let child;
+		let i=0;
+		for (i=0; i<data.length; i++) {
+		    child = document.createElement("option");
+		    child.value = data[i].id;
+		    child.textContent = data[i].name;
+		    selectMenu.append(child);
+		}
+	    })
+});

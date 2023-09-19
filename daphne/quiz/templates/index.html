@@ -58,33 +58,10 @@
 				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl text-center">RANKING</h2><br>
 			</div>
 			<div class="flex-initial justify-center w-auto overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
+				<select id="selectMenu">
+					<option>選択してください</option>
+				</select>
 				<table class="text-gray-800 w-full sm:w-auto">
-					{% if object_list %}
-					<select name="" id="quiz_events" onchange="select_ranking(); return false;">
-						{% for object in object_list %}
-							<option value="{{ forloop.counter0 }}">{{ object.name }}</option>
-						{% endfor %}
-					</select>
-					<thead class="text-left border-b-2 border-orange-300">
-					</thead>
-					<tbody>
-                                            <div id="display_ranking">
-						{% for e_rank in event_ranking %}
-							{% if forloop.counter0 == 0 %}
-								{% for rank in e_rank %}
-                                                <p>
-                                                    {{ rank.temp_rank }}位, 名前 {{ rank.user.nickname }}, スコア {{ rank.score }}
-                                                </p>
-								{% endfor %}
-							{% endif %}
-						{% endfor %}
-                                            </div>
-					{% else %}
-						<tr>
-							<td class="px-4 py-3">準備中...</td>
-						</tr>
-					{% endif %}
-					</tbody>
 				</table>
 			</div>
 		</section><br>
