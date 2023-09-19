@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from quiz.models import UserScores
+from quiz.models import UserScores, QuizEvents
 
 
 class RankingSerializer(serializers.ModelSerializer):
@@ -11,3 +11,9 @@ class RankingSerializer(serializers.ModelSerializer):
 
     def get_nickname(self, obj):
         return obj.user.nickname
+
+
+class QuizEventsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizEvents
+        fields = ("id", "name")

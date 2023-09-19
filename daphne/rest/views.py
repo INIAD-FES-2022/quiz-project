@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework import generics
-from quiz.models import UserScores
-from rest.serializers import RankingSerializer
+from quiz.models import UserScores, QuizEvents
+from rest.serializers import RankingSerializer, QuizEventsSerializer
 
 
 class RankingList(generics.ListAPIView):
@@ -25,3 +25,8 @@ class RankingList(generics.ListAPIView):
             except:
                 pass
         return queryset
+
+
+class QuizEventsList(generics.ListAPIView):
+    queryset = QuizEvents.objects.all()
+    serializer_class = QuizEventsSerializer
