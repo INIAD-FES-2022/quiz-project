@@ -1,11 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import generics
 from quiz.models import UserScores
 from rest.serializers import RankingSerializer
 
 
-class RankingViewSet(viewsets.ModelViewSet):
+class RankingList(generics.ListAPIView):
     serializer_class = RankingSerializer
 
     def get_queryset(self):
