@@ -17,9 +17,17 @@ function createUuid(){
 params = new URLSearchParams(location.search);
 uuid = params.get('uuid');
 nickname = params.get('nickname');
+
+/* UUIDがパラメータに渡されていない場合、sessionStorageから持ってくるか、新しく生成する */
 if (uuid === null) {
-    uuid = createUuid();
+    if (sessionStorage.getItem('uuid') === null) {
+        uuid = createUuid();
+    } else {
+	uuid = sessionStorage.getItem('uuid');
+    }
 }
+
+
     
 /* フォームにニックネームを挿入 */
 if (nickname !== null) {
@@ -33,6 +41,10 @@ window.sessionStorage.setItem("uuid", uuid);
 let nameFormButton = document.getElementById("join-button");
 nameFormButton.addEventListener('click', function () {
     let nameForm = document.getElementById("nickname");
-    window.sessionStorage.setItem("nickname", nameForm.value);
-    window.location.href = "quiz_play";
+    if (nameForm.value === '') {
+	alert('ニックネームを入力してください。');
+    } else {
+        window.sessionStorage.setItem("nickname", nameForm.value);
+    	window.location.href = "quiz_play";
+    }
 })
