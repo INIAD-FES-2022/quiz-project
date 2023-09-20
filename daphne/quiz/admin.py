@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, path
 from django.shortcuts import render
-from quiz.forms import CSVUploadForm
+from quiz.forms import CSVUploadForm, AssociateForm
 from quiz.models import Questions, UserAnswers, Quizzes, UserData, QuizEvents, UserScores
 
 # Register your models here.
@@ -15,7 +15,7 @@ class QuestionsAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('upload-csv/', self.upload_csv, name='upload _csv'),
+            path('upload-csv/', self.upload_csv, name='upload_csv'),
         ]
         return my_urls + urls
 
@@ -45,12 +45,37 @@ class QuestionsAdmin(admin.ModelAdmin):
 
     list_display = ("sentence", "choiceA", "choiceB", "choiceC", "choiceD", "correctChoice")
 
+
 class QuizEventsAdmin(admin.ModelAdmin):
     list_display = ("name",)
+
 
 class QuizzesAdmin(admin.ModelAdmin):
     list_display = ("question", "event")
     fields = ("question", "event")
+    change_list_template = "admin/quizzes_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('associate/<int:event_id>', self.associate, name='associate'),
+        ]
+        return my_urls + urls
+
+    def associate(self, request, event_id):
+        event = QuizEvents.objects.get(id=event_id)
+
+        if request.method == "POST":
+            form = AssociateForm(request.POST)
+            if form.is_valid():
+                selected_questions = form.cleaned_data['question_choices']
+                for question in selected_questions:
+                    Quizzes.objects.create(question=question, event=event)
+                return HttpResponseRedirect(reverse('admin:quiz_questions_changelist'))
+        else:
+            form = AssociateForm()
+        
+        return render(request, 'admin/associate_form.html', {'form': form, 'event' : event})
 
 admin.site.register(QuizEvents, QuizEventsAdmin)
 admin.site.register(Questions, QuestionsAdmin)
