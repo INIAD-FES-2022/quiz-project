@@ -53,7 +53,6 @@ class QuizEventsAdmin(admin.ModelAdmin):
 class QuizzesAdmin(admin.ModelAdmin):
     list_display = ("question", "event")
     fields = ("question", "event")
-    change_list_template = "admin/quizzes_changelist.html"
 
     def get_urls(self):
         urls = super().get_urls()
