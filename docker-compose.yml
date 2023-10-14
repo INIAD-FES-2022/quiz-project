@@ -8,8 +8,6 @@ services:
       expose:
         - "5432"
       restart: always
-      volumes:
-        - ./certs:/etc/nginx/certs
 
     daphne:
         build: ./daphne
@@ -27,7 +25,7 @@ services:
         restart: always
 
     nginx:
-        image: nginx
+      image: nginx:alpine-slim
         env_file:
             - ".env"
         volumes:
@@ -39,20 +37,13 @@ services:
         ports:
             - 80:80
         restart: always
+        command: /bin/bash -c "certbot renew --quiet --no-self-upgrade --email ${EMAIL_ADDRESS} -d ${SERVER_NAME}"
 
     redis:
       image: redis:7
       env_file:
         - ".env"
       restart: always
-
-    certbot:
-      container_name: certbot
-      image: certbot/certbot
-      volumes:
-        - ./certs/:/etc/letsencrypt
-      environment:
-        - EMAIL=${EMAIL_ADDRESS}
 
 volumes:
     static:
