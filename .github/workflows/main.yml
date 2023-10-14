@@ -10,11 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
       - name: Startup containers
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
-          chmod 600 private_key
-          ssh -i private_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
+          chmod 600 ./private_key
+          ssh -i ./private_key -t ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
           cd ${{ secrets.SERVER_DEPLOY_DIR }}
           git checkout main
           git pull
