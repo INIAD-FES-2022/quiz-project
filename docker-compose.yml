@@ -8,6 +8,8 @@ services:
       expose:
         - "5432"
       restart: always
+      volumes:
+        - ./certs:/etc/nginx/certs
 
     daphne:
         build: ./daphne
@@ -43,6 +45,14 @@ services:
       env_file:
         - ".env"
       restart: always
+
+    certbot:
+      container_name: certbot
+      image: certbot/certbot
+      volumes:
+        - ./certs/:/etc/letsencrypt
+      environment:
+        - EMAIL=${EMAIL_ADDRESS}
 
 volumes:
     static:
