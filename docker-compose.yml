@@ -25,7 +25,7 @@ services:
         restart: always
 
     nginx:
-        image: nginx:alpine-slim
+        image: nginx
         env_file:
             - ".env"
         volumes:
@@ -37,7 +37,6 @@ services:
         ports:
             - 80:80
         restart: always
-        command: /bin/bash -c "certbot renew --quiet --no-self-upgrade --email ${EMAIL_ADDRESS} -d ${SERVER_NAME}"
 
     redis:
       image: redis:7
