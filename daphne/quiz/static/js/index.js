@@ -2,7 +2,7 @@
 let params;
 let uuid = '';
 let nickname = '';
-const apiUrl = 'https://' + window.location.host + '/api/';
+const apiUrl = 'http://' + window.location.host + '/api/';
 /* UUID生成 */
 function createUuid(){
 
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			rankingTableBody.append(errorMsg);
 		} else if (data.length < max) {
 	            max=data.length 
-		    for (i=0; i<30; i++) {
+		    for (i=0; i<max; i++) {
 			    tableRow = document.createElement("tr");
 			    tableRankCell = document.createElement("td");
 			    tableRankCell.textContent = data[i].temp_rank;
@@ -122,3 +122,34 @@ document.addEventListener("DOMContentLoaded", function() {
 	    });
     });
 });
+
+/* 順位を表示する */
+function showRank() {
+	const selectMenu = document.getElementById("selectMenu");
+
+	if (selectMenu.value === '選択してください') {
+		alert('開催回を選択してください。');
+	} else {
+		const params = {
+			"eventid": selectMenu.value,
+			"userid": uuid
+		}
+		const queryParams = new URLSearchParams(params);
+		
+		fetch(apiUrl+'ranking/?'+queryParams)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Failed to get ranking');
+					alert('取得に失敗しました。もう一度お試しください。');
+				}
+				return response.json();
+			})
+			.then (data => {
+				if (data.length === 0) {
+					alert(selectMenu[selectMenu.selectedIndex].textContent+'には参加していないようです。他の開催を選んでもう一度お試しください。');
+				} else {
+					alert(data[0].nickname+'さんの'+selectMenu[selectMenu.selectedIndex].textContent+'のスコアは以下のとおりです。\n順位: '+data[0].temp_rank+' スコア: '+data[0].score);
+				}
+			});
+	}
+}
