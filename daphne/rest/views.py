@@ -24,6 +24,7 @@ class RankingList(generics.ListAPIView):
                 queryset = queryset.filter(event=eventid)
             except:
                 pass
+        queryset = queryset.order_by('temp_rank')
         return queryset
 
 
