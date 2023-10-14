@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
       - name: Startup containers
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/private_key
+          chmod 600 private_key
+          ssh -i ~/.ssh/private_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
           cd ${{ secrets.SERVER_DEPLOY_DIR }}
+          git checkout main
+          git pull
           sudo docker-compose -f docker-compose-prd.yml up -d
