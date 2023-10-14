@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Startup containers
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/private_key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
-          ssh -i ~/.ssh/private_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
+          ssh -i private_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
           cd ${{ secrets.SERVER_DEPLOY_DIR }}
           git checkout main
           git pull
