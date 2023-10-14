@@ -15,5 +15,5 @@ jobs:
       - name: Startup containers
         run: |
           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
-          cd ${{ SERVER_DEPLOY_DIR }}
+          cd ${{ secrets.SERVER_DEPLOY_DIR }}
           sudo docker-compose -f docker-compose-prd.yml up -d
