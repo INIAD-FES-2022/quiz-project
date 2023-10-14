@@ -27,7 +27,8 @@ POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
-# If you use S3 to store static files and want to read them from S3, enter values below
+# If you want to use S3 to store static files, enter values below
+# May not work yet
 USE_S3=True
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -39,4 +40,6 @@ APP_ROOT=/usr/src/app
 
 REDIS_HOST=redis
 REDIS_PORT=6379 
+
+EMAIL_ADDRESS=(replace here)
 ```

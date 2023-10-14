@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+		<h1>問題登録フォーム(CSV)</h1>
+		<p>下記のフォームにCSVファイルをアップロードして問題を一括で登録することができます</p>
+		{% if message %}
+		<p>{{ message }}</p>
+		{% endif %}
+		<form method="post" enctype="multipart/form-data">
+    			{% csrf_token %}
+    			{{ form.as_p }}
+    			<button type="submit">インポート</button>
+		</form>
+		<p><a href="admin">管理者画面へ</a></p>
+{% endblock %}

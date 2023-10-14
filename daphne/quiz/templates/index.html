@@ -58,35 +58,20 @@
 				<h2 class="transform rotate-0 sm:rotate-90 text-4xl sm:text-5xl text-center">RANKING</h2><br>
 			</div>
 			<div class="flex-initial justify-center w-auto overflow-y-auto mr-6 ml-6 sm:mr-0 h-96 border-2 border-orange-300 rounded">
-				<table class="text-gray-800 w-full sm:w-auto">
-					{% if object_list %}
-					<select name="" id="quiz_events" onchange="select_ranking(); return false;">
-						{% for object in object_list %}
-							<option value="{{ forloop.counter0 }}">{{ object.name }}</option>
-						{% endfor %}
-					</select>
-					<thead class="text-left border-b-2 border-orange-300">
-					</thead>
-					<tbody>
-                                            <div id="display_ranking">
-						{% for e_rank in event_ranking %}
-							{% if forloop.counter0 == 0 %}
-								{% for rank in e_rank %}
-                                                <p>
-                                                    {{ rank.temp_rank }}位, 名前 {{ rank.user.nickname }}, スコア {{ rank.score }}
-                                                </p>
-								{% endfor %}
-							{% endif %}
-						{% endfor %}
-                                            </div>
-					{% else %}
+				<select id="selectMenu">
+					<option>選択してください</option>
+				</select>
+				<table id="rankingTable" class="text-gray-800 w-full sm:w-auto">
+					<thead>
 						<tr>
-							<td class="px-4 py-3">準備中...</td>
+							<th>順位</th><th>名前</th><th>スコア</th>
 						</tr>
-					{% endif %}
+					</thead>
+					<tbody id="rankingTableBody">
 					</tbody>
 				</table>
 			</div>
+			<button class="mt-10 pl-3 pr-3 pt-2 pb-2 text-2xl bg-white bg-opacity-25 btn" onclick="showRank()">自分の順位を見る</button>
 		</section><br>
 		<section>
 			<!-- Register Section -->
