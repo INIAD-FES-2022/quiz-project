@@ -137,17 +137,23 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT') if os.environ.get('STATIC_ROOT') else (BASE_DIR / 'staticfiles')
+STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if os.environ.get('MEDIA_ROOT') else (BASE_DIR / 'media')
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 USE_S3 = True if os.environ.get('USE_S3') == 'True' else False
-AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' if USE_S3 is True else 'django.core.files.storage.FileSystemStorage'
-S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-
-MEDIA_URL = S3_URL if USE_S3 is True else 'files/'
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT') if USE_S3 is True else (BASE_DIR / 'media')
+if USE_S3 is True:
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
