@@ -3,11 +3,11 @@ const roomName = window.sessionStorage.getItem('uuid');
 const nickname = window.sessionStorage.getItem('nickname');
 
 const quizSocket = new WebSocket(
-    'ws://' + window.location.host + '/ws/quiz/?userid=' + roomName + '&nickname=' + nickname
+    'wss://' + window.location.host + '/ws/quiz/?userid=' + roomName + '&nickname=' + nickname
 );
 
 let quizId; // 出題される問題のID、quizOpenを受信したときに代入
-let checkedValue; // 回答者が選択している選択肢
+let checkedValue = 'NOT_SELECTED'; // 回答者が選択している選択肢
 
 let sentenceParagraph = document.getElementById('sentence-paragraph');
 let choiceA = document.getElementById('A');
@@ -104,6 +104,9 @@ quizSocket.onmessage = function(e) {
 
         /* ユーザの回答を無回答に変更 */
         checkedValue = "NOT_ANSWERED";
+
+        /* アナウンス用テキストをリセット */
+        messageParagraph.innerText = "回答が採点されました！";
 
     } else if (messageType === 'userIdSentRequest') {
         /* ネームカードのIDを送信します */

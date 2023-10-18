@@ -1,5 +1,5 @@
 // WebSocketオブジェクト
-const g_socket = new WebSocket( "ws://" + window.location.host + "/ws/quiz/" );
+const g_socket = new WebSocket( "wss://" + window.location.host + "/ws/quiz/" );
 
 // WebSocketに命令を送信する処理
 function SendOperate(obj){
@@ -8,6 +8,12 @@ function SendOperate(obj){
         // 待機中切り替え
     if(opType == "スタート"){
         context["messageType"] = "roomActivate";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
+        g_socket.send( JSON.stringify( context ) );
+    }
+    else if (opType == "イベント終了") {
+        context["messageType"] = "roomInactive";
+        context["eventId"] = Number(document.getElementById("select_c").value)+1;
         g_socket.send( JSON.stringify( context ) );
     }
     // 問題の公開
@@ -35,11 +41,13 @@ function SendOperate(obj){
     // 問題を締め切る
     else if(opType == "非公開"){
         context["messageType"] = "quizClose";
+        context["quizId"] = document.getElementById("select_q").value;
         g_socket.send( JSON.stringify( context ) );
     }
     // 採点（回答の集計）
     else if(opType == "回収"){
         context["messageType"] = "answerSentRequest";
+        context["quizId"] = document.getElementById("select_q").value;
         g_socket.send( JSON.stringify( context ) );
     }
     else if (opType == "採点") {
@@ -58,6 +66,9 @@ function SendOperate(obj){
         context["messageType"] = "rankDisplayRequest";
         context["eventId"] = Number(document.getElementById("select_c").value)+1;
         context["isFin"] = true;
+        g_socket.send( JSON.stringify( context ) );
+    } else if (opType == "強制リセット") {
+        context["messageType"] = "SequentialStateReset";
         g_socket.send( JSON.stringify( context ) );
     }
     else{

@@ -30,19 +30,31 @@ services:
             - ".env"
         volumes:
             - ./nginx/nginx.conf:/etc/nginx/templates/default.conf.template
+            - /etc/letsencrypt:/etc/letsencrypt
             - static:${STATIC_ROOT}
             - media:${MEDIA_ROOT}
         links:
             - daphne
         ports:
             - 80:80
+            - 443:443
         restart: always
+        depends_on:
+          - certbot
 
     redis:
       image: redis:7
       env_file:
         - ".env"
       restart: always
+
+    certbot:
+      image: certbot/certbot:v1.7.0
+      env_file:
+        - ".env"
+      volumes:
+        - /etc/letsencrypt:/etc/letsencrypt
+      command: certbot certonly --standalone -d ${SERVER_NAME} --email ${EMAIL_ADDRESS} --agree-tos --no-eff-email
 
 volumes:
     static:
