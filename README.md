@@ -8,9 +8,20 @@ This is a web application for holding quizzes programs.
 Environments under Docker is tested.
 
 # Installation
+## For production
 1. Clone this repository.
 2. Make ".env" file.(see [Config](#Config))
-3. Run `docker-compose up -d`
+3. Run `docker-compose -f docker-compose-prd.yml up -d`
+
+You'll need to run `python manage.py createsuperuser` to create a superuser.
+
+## For development
+1. Clone this repository.
+2. Make ".env" file.(see [Config](#Config))
+3. Run `python daphne/manage.py migrate`
+4. Run `python daphne/manage.py runserver`
+
+You'll need to run `python manage.py createsuperuser` to create a superuser. 
 
 # Config
 ```.env
