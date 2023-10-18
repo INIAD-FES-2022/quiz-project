@@ -21,22 +21,33 @@ DJANGO_SECRET_KEY=SECRETKEY(replace here)
 CSRF_TRUSTED_ORIGINS=https://your-website-origin, # Don't forget comma
 ALLOWED_HOSTS=your-website-origin, # Don't forget comma 
 
+# IS_POSTGRES=False to use SQLite
+IS_POSTGRES=True
 POSTGRES_NAME=postgres
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
+# If you use Docker to run DB, set POSTGRES_HOST=db
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
-# If you use S3 to store static files and want to read them from S3, enter values below
+# If you need to use S3 to store static files, enter values below
 USE_S3=True
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_STORAGE_BUCKET_NAME=
+AWS_S3_REGION_NAME=
 
 MEDIA_ROOT=/var/lib/media/
 STATIC_ROOT=/var/lib/static/
 APP_ROOT=/usr/src/app
 
+# If you use Docker to run Redis, set REDIS_HOST=redis
 REDIS_HOST=redis
 REDIS_PORT=6379 
+
+# If you use Docker to run nginx, set SERVER_NAME
+SERVER_NAME=
+
+# If you use Docker to get certification from Let's encrypt using certbot, enter a value below to get notification for update the certification
+EMAIL_ADDRESS=
 ```
