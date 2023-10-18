@@ -29,5 +29,8 @@ class RankingList(generics.ListAPIView):
 
 
 class QuizEventsList(generics.ListAPIView):
-    queryset = QuizEvents.objects.all()
     serializer_class = QuizEventsSerializer
+    
+    def get_queryset(self):
+        queryset = QuizEvents.objects.filter(is_active=True)
+        return queryset
