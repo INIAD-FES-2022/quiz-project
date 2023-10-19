@@ -2,7 +2,7 @@
 let params;
 let uuid = '';
 let nickname = '';
-const apiUrl = 'http://' + window.location.host + '/api/';
+const apiUrl = 'https://' + window.location.host + '/api/';
 /* UUID生成 */
 function createUuid(){
 
